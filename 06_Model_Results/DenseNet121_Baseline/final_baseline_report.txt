@@ -1,0 +1,59 @@
+================================================================================
+BONEGUARD AI: DENSENET121 BASELINE FINAL EXPERIMENT REPORT
+================================================================================
+Project Title: "Advanced Bone Fracture Assessment and Clinical Decision Support
+                Through Deep Learning-Based X-Ray Image Analysis"
+Model:          Standard DenseNet121 Baseline (torchvision)
+Pretrained:     ImageNet-1K Weights
+Modifications:  2-Class Linear Classifier Replacement (No Attention / No CBAM)
+Target Task:    Binary X-Ray Fracture Classification (FRACTURE vs NO_FRACTURE)
+Evaluation Date: September 2026
+
+==================================================
+1. BFRMX INTERNAL TEST SET PERFORMANCE
+==================================================
+Total Test Samples:             560
+Classification Accuracy:        0.9964 (99.64%)
+Macro Precision:                0.9963
+Macro Recall:                   0.9963
+Macro F1-Score:                 0.9963
+Fracture Precision:             0.9956
+Fracture Sensitivity (Recall):  0.9956
+Fracture F1-Score:              0.9956
+Specificity (No-Fracture Rec):  0.9970
+Area Under ROC Curve (ROC-AUC): 0.9999
+
+Confusion Matrix Breakdown:
+- True Positives  (TP - Fracture correctly predicted):    225
+- True Negatives  (TN - No-Fracture correctly predicted): 333
+- False Positives (FP - No-Fracture predicted Fracture):  1
+- False Negatives (FN - Fracture missed):                 1
+
+==================================================
+2. FRACATLAS EXTERNAL BENCHMARK PERFORMANCE
+==================================================
+Total External Samples:         4068
+Classification Accuracy:        0.4130 (41.30%)
+Macro Precision:                0.5353
+Macro Recall:                   0.5530
+Macro F1-Score:                 0.4006
+Fracture Precision:             0.1978
+Fracture Sensitivity (Recall):  0.7686
+Fracture F1-Score:              0.3146
+Specificity (No-Fracture Rec):  0.3374
+Area Under ROC Curve (ROC-AUC): 0.6104
+
+Confusion Matrix Breakdown:
+- True Positives  (TP - Fracture correctly predicted):    548
+- True Negatives  (TN - No-Fracture correctly predicted): 1132
+- False Positives (FP - No-Fracture predicted Fracture):  2223
+- False Negatives (FN - Fracture missed):                 165
+
+==================================================
+3. CLINICAL AI & GENERALIZATION OBSERVATIONS
+==================================================
+- Role: This standard DenseNet121 model serves as the foundational baseline for BoneGuard AI.
+- Internal Test Evaluation: Demonstrates feature extraction capability on identically acquired radiographs.
+- External Generalization: FracAtlas serves as a rigorous cross-domain external validation benchmark.
+- Next Steps: DenseNet121 + CBAM and DenseNet121 + DG-CBAM will be compared directly against this baseline.
+================================================================================

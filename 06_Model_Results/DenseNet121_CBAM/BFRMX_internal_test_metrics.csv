@@ -1,0 +1,2 @@
+dataset,total_samples,accuracy,precision_macro,recall_macro,f1_macro,precision_fracture,recall_fracture (sensitivity),f1_fracture,specificity,roc_auc,true_positives (TP),true_negatives (TN),false_positives (FP),false_negatives (FN)
+BFRMX_internal_test,560,0.9982142857142857,0.9985074626865671,0.997787610619469,0.9981439683944333,1.0,0.995575221238938,0.9977827050997783,1.0,0.999191881723279,225,334,0,1

@@ -1,0 +1,13 @@
+BONEGUARD AI — EXP E CONFIRMATION CONFIGURATION
+============================================================
+Experiment: Exp E Confirmation (Unweighted CrossEntropyLoss)
+Architecture: DenseNet121 + Proposed DG-CBAM
+Loss Function: CrossEntropyLoss (Unweighted: w0=1.0, w1=1.0)
+Optimizer: AdamW (lr=1e-4, weight_decay=1e-4)
+Scheduler: CosineAnnealingLR (T_max=25, eta_min=1e-6)
+Evaluation Normalization: ImageNet Standard (mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+Image Input Resolution: 224 x 224 x 3
+Classification Threshold: 0.50 (Standard Locked Threshold)
+BFRMX Test Set Path: 04_Preprocessing/02_Split/test
+FracAtlas Benchmark Path: 04_Preprocessing/01_Cleaned/FracAtlas
+Data Isolation Protocol: FracAtlas was completely isolated during all training & selection.

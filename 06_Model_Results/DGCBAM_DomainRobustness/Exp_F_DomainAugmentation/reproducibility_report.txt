@@ -1,0 +1,37 @@
+================================================================================
+BONEGUARD AI — EXP F REPRODUCIBILITY AUDIT REPORT
+================================================================================
+
+Date: 2026-09-29 12:13:05
+Status: Fully Verified & Deterministic
+
+1. Checkpoint Verification:
+  - Exp E Checkpoint Intact: D:\BoneGuard AI\06_Model_Results\DGCBAM_DomainRobustness\Exp_E_ClassWeight\best_model.pth (29653669 bytes)
+  - Exp F Checkpoint Path:   D:\BoneGuard AI\06_Model_Results\DGCBAM_DomainRobustness\Exp_F_DomainAugmentation\best_model.pth (29680037 bytes)
+  - Checkpoint Best Epoch:   9
+
+2. Reproduced BFRMX Internal Test Metrics (N=560):
+  - Accuracy:    99.46%
+  - Precision:   99.12%
+  - Recall:      99.56%
+  - Specificity: 99.40%
+  - F1-Score:    99.34%
+  - ROC-AUC:     0.9997
+  - PR-AUC:      0.9996
+  - Confusion Matrix: TP=225, TN=332, FP=2, FN=1
+
+3. Reproduced FracAtlas External Benchmark Metrics (N=4,068):
+  - Accuracy:    36.95%
+  - Precision:   20.38%
+  - Recall:      89.34%
+  - Specificity: 25.81%
+  - F1-Score:    33.19%
+  - ROC-AUC:     0.6206
+  - PR-AUC:      0.2452
+  - Confusion Matrix: TP=637, TN=866, FP=2489, FN=76
+
+4. Data Integrity Confirmations:
+  [X] Zero data leakage: FracAtlas was completely isolated during training & selection.
+  [X] Zero checkpoint overwriting: Exp E checkpoint remains pristine.
+  [X] Zero threshold manipulation: Locked at 0.50.
+================================================================================

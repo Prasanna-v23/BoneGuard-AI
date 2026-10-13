@@ -1,0 +1,16 @@
+================================================================================
+BONEGUARD AI: DENSENET121 BASELINE MODEL ARCHITECTURE SUMMARY
+================================================================================
+Backbone:                   DenseNet-121 (DenseNet)
+Feature Extractor:          121 layers, 4 Dense Blocks with Transition Layers
+In-Features to Classifier:  1024
+Classifier Replacement:     nn.Linear(in_features=1024, out_features=2, bias=True)
+Total Parameters:           6,955,906
+Trainable Parameters:       6,955,906
+Non-Trainable Parameters:   0
+Output Classes:             2 classes -> [0: FRACTURE, 1: NO_FRACTURE]
+Input Spatial Shape:        [Batch_Size, 3, 224, 224]
+Feature Map Pre-Pooling:    [Batch_Size, 1024, 7, 7]
+Global Average Pooling:     [Batch_Size, 1024]
+Final Logits Shape:         [Batch_Size, 2]
+================================================================================

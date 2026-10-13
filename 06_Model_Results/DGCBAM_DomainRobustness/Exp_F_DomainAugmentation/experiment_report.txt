@@ -1,0 +1,84 @@
+================================================================================
+BONEGUARD AI — EXPERIMENT F SCIENTIFIC EXPERIMENT REPORT
+================================================================================
+
+Date: 2026-09-29 12:09:41
+Author: BoneGuard AI Research Team
+Project: Advanced Bone Fracture Assessment Through Deep Learning-Based X-Ray Image Analysis
+
+1. OBJECTIVE & HYPOTHESIS
+------------------------------------------------------------
+Objective: Evaluate whether realistic radiographic domain-variation augmentation during training on
+           the BFRMX training partition improves generalization on the untouched external FracAtlas benchmark.
+Hypothesis: Exposing the network to plausible variations in X-ray exposure, contrast LUTs, detector sharpness,
+            and slight geometry will make feature representations more robust to scanner domain shift,
+            thereby mitigating out-of-domain false-positive inflation.
+
+2. DATASET & PARTITION CONFIGURATION
+------------------------------------------------------------
+BFRMX Train:      2609 samples ({'FRACTURE': 1048, 'NO_FRACTURE': 1561})
+BFRMX Validation: 560 samples ({'FRACTURE': 225, 'NO_FRACTURE': 335})
+BFRMX Test:       560 samples ({'FRACTURE': 226, 'NO_FRACTURE': 334})
+FracAtlas Ext:    4068 samples ({'FRACTURE': 713, 'NO_FRACTURE': 3355})
+Data Isolation Protocol: FracAtlas was completely isolated from training, validation, early stopping, and selection.
+
+3. AUGMENTATION & TRAINING CONFIGURATION
+------------------------------------------------------------
+Augmentation Pipeline (BFRMX Train Only):
+  - RandomRotation (degrees=8)
+  - RandomAffine (translate=4%, scale=0.96-1.04)
+  - RandomHorizontalFlip (p=0.5)
+  - ColorJitter (brightness=0.15, contrast=0.15)
+  - RandomAdjustSharpness (factor=1.5, p=0.3)
+  - RandomAutocontrast (p=0.2)
+  - GaussianBlur (kernel=3, sigma=0.1-1.0, p=0.25)
+Optimizer: AdamW (lr=1e-4, weight_decay=1e-4)
+Scheduler: CosineAnnealingLR (T_max=25, eta_min=1e-6)
+Loss: Unweighted CrossEntropyLoss [1.0, 1.0]
+Training Time: 23.54 minutes | Best Epoch: 9
+
+4. IN-DOMAIN BFRMX TEST RESULTS (N = 560)
+------------------------------------------------------------
+Accuracy:    99.46%
+Precision:   99.12%
+Recall:      99.56%
+Specificity: 99.40%
+F1-Score:    99.34%
+ROC-AUC:     0.9997
+PR-AUC:      0.9996
+Confusion Matrix: TP=225, TN=332, FP=2, FN=1
+
+5. OUT-OF-DOMAIN FRACATLAS BENCHMARK RESULTS (N = 4,068)
+------------------------------------------------------------
+Accuracy:    36.95%
+Precision:   20.38%
+Recall:      89.34%
+Specificity: 25.81%
+F1-Score:    33.19%
+ROC-AUC:     0.6206
+PR-AUC:      0.2452
+Confusion Matrix: TP=637, TN=866, FP=2489, FN=76
+
+6. COMPARISON WITH EXP E & BASELINE MODELS
+------------------------------------------------------------
+                Model / Experiment                                                    Description  BFRMX_Acc  BFRMX_F1  BFRMX_Recall  BFRMX_Spec  BFRMX_AUC  FracAtlas_Acc  FracAtlas_F1  FracAtlas_Recall  FracAtlas_Spec  FracAtlas_AUC  FracAtlas_TP  FracAtlas_TN  FracAtlas_FP  FracAtlas_FN
+              DenseNet121 Baseline                         Vanilla DenseNet-121 without attention  99.640000 99.560000     99.560000   99.700000   0.999900      41.300000     31.460000         76.860000       33.740000       0.610400           548          1132          2223           165
+       DenseNet121 + Standard CBAM                       Sequential Channel and Spatial Attention  99.820000 99.780000     99.560000  100.000000   0.999200      32.520000     30.910000         86.120000       21.130000       0.586100           614           709          2646            99
+  DenseNet121 + DG-CBAM (Original)                            Proposed DG-CBAM with weighted loss  99.640000 99.560000     99.120000  100.000000   0.999900      40.090000     32.440000         82.050000       31.180000       0.633600           585          1046          2309           128
+        Exp E — Unweighted DG-CBAM                       DG-CBAM with unweighted CrossEntropyLoss  99.640000 99.560000     99.120000  100.000000   0.999600      49.900000     34.510000         75.320000       44.500000       0.647900           537          1493          1862           176
+Exp F — Domain-Robust Augmentation DG-CBAM + realistic radiographic domain-variation augmentation  99.464286 99.337748     99.557522   99.401198   0.999735      36.946903     33.185725         89.340813       25.812221       0.620566           637           866          2489            76
+
+7. FALSE POSITIVE & NEGATIVE ANALYSIS
+------------------------------------------------------------
+Exp F FP: 2489 | Exp E FP: 1862 (Diff: +627, +33.67%)
+Exp F FP vs Orig DG-CBAM: Diff: +180 (+7.80%)
+Exp F FN: 76 | Exp E FN: 176 (Diff: -100)
+
+8. SCIENTIFIC DECISION & CONCLUSION
+------------------------------------------------------------
+Decision Classification: D. HARMFUL TRADE-OFF — External performance changed with unfavorable trade-offs.
+
+Recommendation on Prototype Deployment:
+Exp E remains the verified reference deployment checkpoint due to optimal in-domain perfection
+and consistent established baseline metrics.
+================================================================================

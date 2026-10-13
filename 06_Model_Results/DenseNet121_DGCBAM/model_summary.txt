@@ -1,0 +1,22 @@
+================================================================================
+BONEGUARD AI: DENSENET121 + PROPOSED DG-CBAM MODEL ARCHITECTURE SUMMARY
+================================================================================
+Backbone:                   DenseNet-121 (DenseNet)
+Feature Extractor:          121 layers with 4 DenseBlocks and Transition Layers
+Attention Mechanism:        Proposed Disagreement-Guided CBAM (DG-CBAM)
+Formulation:                D = |Mc - Ms| -> M_new = Ms + gamma * D -> F_out = F (x) M_new
+DG-CBAM Modules:
+  - dgcbam1: Channel Att (256 ch, r=16) + Spatial Att (7x7 conv) + Learnable Gamma -> 8,291 params
+  - dgcbam2: Channel Att (512 ch, r=16) + Spatial Att (7x7 conv) + Learnable Gamma -> 32,867 params
+  - dgcbam3: Channel Att (1024 ch, r=16) + Spatial Att (7x7 conv) + Learnable Gamma -> 131,171 params
+  - dgcbam4: Channel Att (1024 ch, r=16) + Spatial Att (7x7 conv) + Learnable Gamma -> 131,171 params
+Total DG-CBAM Parameters:   303,564 (303,560 Conv/MLP weights + 4 learnable gamma scalars)
+In-Features to Classifier:  1024
+Classifier:                 nn.Linear(in_features=1024, out_features=2, bias=True)
+Total Parameters:           7,259,406
+Trainable Parameters:       7,259,406
+Non-Trainable Parameters:   0
+Output Classes:             2 classes -> [0: FRACTURE, 1: NO_FRACTURE]
+Input Spatial Shape:        [Batch_Size, 3, 224, 224]
+Final Logits Shape:         [Batch_Size, 2]
+================================================================================

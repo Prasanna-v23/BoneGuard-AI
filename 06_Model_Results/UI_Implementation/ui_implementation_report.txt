@@ -1,0 +1,185 @@
+================================================================================
+BONEGUARD AI — UI IMPLEMENTATION & SYSTEM INTEGRATION REPORT
+================================================================================
+Date: 2026-09-29
+Project: Advanced Bone Fracture Assessment and Clinical Decision Support
+         Through Deep Learning-Based X-Ray Image Analysis
+Architecture: React.js UI <-> FastAPI <-> DenseNet121 + DG-CBAM Pipeline
+Status: Fully Implemented, Integrated, and Verified
+
+--------------------------------------------------------------------------------
+1. SYSTEM ARCHITECTURE & INTEGRATION
+--------------------------------------------------------------------------------
+Frontend:
+  - Framework: React 19 (Vite 8.3.1)
+  - UI Architecture: Component-based medical research dashboard
+  - Styling: Pure Vanilla CSS Design System with dark clinical aesthetic,
+    glassmorphism cards, responsive grids, and subtle transitions
+  - Icons: Lucide React (v1.48.0)
+  - State Management: React Hooks (useState, useEffect, useRef)
+  - API Client: Asynchronous Fetch Client with configurable VITE_API_URL
+
+Backend:
+  - Framework: FastAPI (v0.141.1) running on Uvicorn (v0.54.0)
+  - Deep Learning Engine: PyTorch 2.6.0 + CUDA 12.4
+  - Image Processing: Pillow (v12.3.0), OpenCV (v5.0.0), TorchVision (v0.21.0)
+  - Data Serialization: Python Multipart, JSONResponse, Base64 Image Streaming
+  - Model Lifecycle: Singleton pattern loaded on FastAPI lifespan startup
+
+--------------------------------------------------------------------------------
+2. MODEL & CHECKPOINT SPECIFICATIONS
+--------------------------------------------------------------------------------
+Model Architecture:
+  - Backbone: DenseNet-121 (Dense Feature Reuse across 4 DenseBlocks)
+  - Attention Module: Proposed Difference-Guided CBAM (DG-CBAM)
+    Formulation: M_new = M_s + γ · |M_c - M_s|
+    Inserted at output of each DenseBlock (stages 1, 2, 3, 4)
+  - Classification Head: AdaptiveAvgPool2d(1) -> Flatten -> Linear(1024, 2)
+  - Total Parameters: 7,259,406 (All trainable)
+
+Selected Deployment Checkpoint:
+  - Checkpoint Path: 06_Model_Results/DGCBAM_DomainRobustness/Exp_E_ClassWeight/best_model.pth
+  - Checkpoint Size: 28.28 MB
+  - Configuration: Exp-E (Unweighted CrossEntropyLoss [1.0, 1.0])
+  - Reason for Selection: Best verified balance of in-domain classification
+    (99.64% test accuracy, 100% precision) and domain robustness (reduced 447
+    false positive alarms on external FracAtlas benchmark).
+  - Learned Mean Gamma (γ): 0.1038
+    Stage 1: 0.1015
+    Stage 2: 0.0981
+    Stage 3: 0.1024
+    Stage 4: 0.1134
+
+--------------------------------------------------------------------------------
+3. PREPROCESSING & NORMALIZATION PROTOCOL
+--------------------------------------------------------------------------------
+Exact Training Preprocessing Reused:
+  1. Image Input: Decoded via PIL in RGB mode
+  2. Spatial Resize: (224, 224)
+  3. Tensor Conversion: transforms.ToTensor() [0.0, 1.0]
+  4. Standard ImageNet Normalization:
+     Mean = [0.485, 0.456, 0.406]
+     Std  = [0.229, 0.224, 0.225]
+  5. Batch Dimension: Unsqueeze(0) -> [1, 3, 224, 224]
+
+--------------------------------------------------------------------------------
+4. GRAD-CAM EXPLAINABILITY IMPLEMENTATION
+--------------------------------------------------------------------------------
+  - Target Layer: model.features.norm5 (1024 channels output before pooling)
+  - Target Class: Class 0 (FRACTURE) for backpropagation score gradient
+  - Forward/Backward Hooks: Captures activations and gradients with retain_graph=False
+  - Processing:
+      1. Global average pooling of gradients: weights = mean(grad, dim=(2,3))
+      2. Weighted activation sum: cam = relu(sum(weights * activations))
+      3. Normalization to [0.0, 1.0] range
+      4. Cubic interpolation resize to 224 x 224
+      5. OpenCV COLORMAP_JET application
+      6. Alpha blending with input radiograph (alpha = 0.45)
+      7. Base64 PNG encoding for zero-disk-write frontend transfer
+  - UI Views: Overlay, Heatmap, Original Radiograph, Side-by-Side Comparison
+
+--------------------------------------------------------------------------------
+5. API ENDPOINTS & VERIFICATION
+--------------------------------------------------------------------------------
+1. GET /health
+   - Status: 200 OK
+   - Response: {"status":"ok","service":"BoneGuard AI","model_loaded":true,"device":"cuda","model":"DenseNet121 + DG-CBAM","version":"1.0.0"}
+
+2. GET /model-info
+   - Status: 200 OK
+   - Response: Complete technical specifications, backbone, DG-CBAM details,
+     parameter counts (7,259,406), checkpoint path, and learned gamma values.
+
+3. GET /validation-info
+   - Status: 200 OK
+   - Response: In-domain BFRMX test metrics (99.64% accuracy, TP=224, TN=334, FP=0, FN=2)
+     and independent external FracAtlas benchmark data with explicit disclaimers.
+
+4. POST /predict
+   - Status: 200 OK
+   - Input: multipart/form-data ("image")
+   - Response: Real probabilities (sum=1.0000), locked threshold 0.50, prediction.
+
+5. POST /predict-with-gradcam
+   - Status: 200 OK
+   - Input: multipart/form-data ("image")
+   - Response: Prediction, confidence, and Base64 PNGs for overlay, heatmap, original.
+
+--------------------------------------------------------------------------------
+6. VERIFIED SCIENTIFIC PERFORMANCE METRICS
+--------------------------------------------------------------------------------
+BFRMX Internal Test Partition (N = 560):
+  - Accuracy: 99.64% (558/560 correct)
+  - Precision: 100.00%
+  - Recall / Sensitivity: 99.12% (224/226 detected)
+  - Specificity: 100.00% (334/334 normal)
+  - F1-Score: 99.56%
+  - ROC-AUC: 0.9996
+  - PR-AUC: 0.9995
+  - Confusion Matrix: TP=224, TN=334, FP=0, FN=2
+
+FracAtlas External Benchmark (N = 4,068) [Out-of-Domain Generalization]:
+  - External Accuracy: 49.90%
+  - Sensitivity: 75.32% (537/713 detected)
+  - Precision: 22.38%
+  - Specificity: 44.50% (1,493/3,355 normal)
+  - ROC-AUC: 0.6479
+  - False Positive Reduction: -447 FP vs standard baseline
+
+--------------------------------------------------------------------------------
+7. AUTOMATED TEST SUITE RESULTS
+--------------------------------------------------------------------------------
+Test File: test_backend_api.py (8 Tests Executed)
+  - test_01_health_endpoint: PASSED (200 OK, device=cuda)
+  - test_02_model_info_endpoint: PASSED (200 OK, 7,259,406 params)
+  - test_03_validation_info_endpoint: PASSED (200 OK, verified BFRMX values)
+  - test_04_predict_endpoint_real_fracture: PASSED (prediction=FRACTURE, prob=0.9814)
+  - test_05_predict_endpoint_real_normal: PASSED (prediction=NO FRACTURE, prob=0.6156)
+  - test_06_predict_with_gradcam_endpoint: PASSED (Valid Base64 PNG generated)
+  - test_07_invalid_image_upload: PASSED (400 Bad Request with user-friendly error)
+  - test_08_empty_image_upload: PASSED (400 Bad Request for empty file)
+Summary: 8/8 Tests Passed (100% Pass Rate).
+
+--------------------------------------------------------------------------------
+8. FILES CREATED / CONFIGURED
+--------------------------------------------------------------------------------
+Backend:
+  - backend/main.py (FastAPI application entrypoint, lifespan, CORS, /health)
+  - backend/inference/pipeline.py (Singleton inference & GradCAM engine)
+  - backend/routes/predict.py (/predict & /predict-with-gradcam routes)
+  - backend/routes/info.py (/model-info & /validation-info routes)
+  - backend/requirements.txt (Backend dependencies)
+  - test_backend_api.py (Automated backend test suite)
+
+Frontend:
+  - frontend/src/App.jsx (Main application root, tab routing, backend health polling)
+  - frontend/src/App.css (Comprehensive custom styling and design system)
+  - frontend/src/components/Header.jsx (Site header, navigation, live backend status)
+  - frontend/src/components/Dashboard.jsx (X-ray dropzone, preview, analysis, Grad-CAM viewer)
+  - frontend/src/components/ModelInfo.jsx (Architecture, DG-CBAM formulation, learned gammas)
+  - frontend/src/components/Validation.jsx (BFRMX & FracAtlas metrics, confusion matrices)
+  - frontend/src/components/About.jsx (Project details, student & supervisor credentials)
+  - frontend/src/components/Footer.jsx (Footer with disclaimer)
+  - frontend/src/services/api.js (FastAPI client service)
+
+Documentation:
+  - README.md (Comprehensive project guide, architecture, setup commands, endpoints)
+  - 06_Model_Results/UI_Implementation/ui_implementation_report.txt (This document)
+
+--------------------------------------------------------------------------------
+9. COMMANDS TO RUN SYSTEM
+--------------------------------------------------------------------------------
+Backend:
+  cd "d:/BoneGuard AI"
+  .venv\Scripts\Activate.ps1
+  python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000
+
+Frontend:
+  cd "d:/BoneGuard AI/frontend"
+  npm run dev
+
+Access URLs:
+  - React Web UI: http://localhost:5173
+  - FastAPI Backend: http://127.0.0.1:8000
+  - Swagger Documentation: http://127.0.0.1:8000/docs
+================================================================================

@@ -1,0 +1,26 @@
+================================================================================
+BONEGUARD AI: DENSENET121 BASELINE CONFIGURATION & REPRODUCIBILITY LOG
+================================================================================
+Model Architecture:         Standard DenseNet121 Baseline (torchvision)
+Pretrained Weights:         ImageNet-1K (DenseNet121_Weights.DEFAULT)
+Attention Modules:          None (CBAM / DG-CBAM strictly excluded in Step 1)
+Number of Classes:          2 (FRACTURE: 0, NO_FRACTURE: 1)
+Input Dimensions:           224 x 224 x 3
+Random Seed:                42
+Python Version:             3.11.16
+PyTorch Version:            2.6.0+cu124
+Torchvision Version:        2.6.0+cu124
+Device Selected:            cuda
+GPU Name:                   NVIDIA GeForce RTX 3050 6GB Laptop GPU
+CUDA Version:               12.4
+Batch Size:                 32
+Optimizer:                  AdamW (lr=0.0001, weight_decay=0.0001)
+LR Scheduler:               ReduceLROnPlateau(mode='min', factor=0.5, patience=2, min_lr=1e-6)
+Loss Function:              nn.CrossEntropyLoss(weight=[1.24475, 0.83568])
+Class Weight Source:        BFRMX Training Set ONLY (Fracture: 1048, No-Fracture: 1561)
+Total Epochs Run:           14
+Best Validation Epoch:      7
+Best Validation Loss:       0.0029
+Best Validation F1-Score:   1.0000
+Best Checkpoint Path:       D:\BoneGuard AI\06_Model_Results\DenseNet121_Baseline\best_model.pth
+================================================================================

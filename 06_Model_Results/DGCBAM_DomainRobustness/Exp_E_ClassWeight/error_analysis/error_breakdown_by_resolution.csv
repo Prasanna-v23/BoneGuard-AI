@@ -1,0 +1,5 @@
+resolution_quartile,total_samples,exp_e_TP,exp_e_TN,exp_e_FP,exp_e_FN,exp_e_accuracy,exp_e_fp_rate
+< 0.5 MP (Low),3728,450,1399,1715,164,49.6,55.07
+0.5-1.5 MP (Medium),0,0,0,0,0,0.0,0.0
+1.5-3.5 MP (High),0,0,0,0,0,0.0,0.0
+> 3.5 MP (Ultra-HD),340,87,94,147,12,53.24,61.0

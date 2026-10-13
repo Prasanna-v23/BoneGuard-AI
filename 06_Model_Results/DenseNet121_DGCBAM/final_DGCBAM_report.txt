@@ -1,0 +1,219 @@
+================================================================================
+BONEGUARD AI: DENSENET121 + PROPOSED DG-CBAM FINAL EXPERIMENT REPORT
+================================================================================
+Project Title: "Advanced Bone Fracture Assessment and Clinical Decision Support
+                Through Deep Learning-Based X-Ray Image Analysis"
+Model:          DenseNet121 + Proposed DG-CBAM (Disagreement-Guided CBAM)
+Pretrained:     ImageNet-1K Backbone Weights (DenseNet121_Weights.DEFAULT)
+Attention:      Proposed Disagreement-Guided Channel & Spatial Attention
+Formulation:    D = |Mc - Ms| -> M_new = Ms + gamma * D -> F_out = F (x) M_new
+Placement:      Output of each DenseBlock (denseblock 1, 2, 3, 4)
+Target Task:    Binary X-Ray Fracture Classification (FRACTURE vs NO_FRACTURE)
+Evaluation Date: September 2026
+Audit Status:   FracAtlas External Pipeline Audit PASSED
+
+================================================================================
+1. EXECUTIVE SUMMARY & EXPERIMENTAL OBJECTIVE
+================================================================================
+Objective:
+Evaluate whether the proposed Disagreement-Guided Convolutional Block Attention
+Module (DG-CBAM) improves fracture classification accuracy, fracture sensitivity,
+and cross-domain generalization on external clinical radiographs (FracAtlas) compared
+to both the standard DenseNet-121 baseline and standard DenseNet-121 + CBAM.
+
+Key Research Question:
+"Does the proposed DG-CBAM attention refinement provide measurable improvement over
+standard DenseNet121 and standard CBAM for bone-fracture classification, particularly
+on the unseen FracAtlas external dataset?"
+
+================================================================================
+2. AUTHORITATIVE DATASET COUNTS & VERIFICATION
+================================================================================
+BFRMX Training Set:
+  - FRACTURE:     1,048
+  - NO_FRACTURE:  1,561
+  - Total:        2,609
+BFRMX Validation Set:
+  - FRACTURE:       225
+  - NO_FRACTURE:    335
+  - Total:          560
+BFRMX Internal Test Set:
+  - FRACTURE:       226
+  - NO_FRACTURE:    334
+  - Total:          560
+FracAtlas External Benchmark Set (External-Only):
+  - FRACTURE:       713
+  - NO_FRACTURE:  3,355
+  - Total:        4,068
+
+Leakage Audit: 0 content hash overlaps across all 4 dataset partitions.
+Contamination Check: FracAtlas was NEVER used for training, validation, or tuning.
+
+================================================================================
+3. PROPOSED DG-CBAM MATHEMATICAL FORMULATION & ARCHITECTURE
+================================================================================
+DG-CBAM Proposed Mechanism:
+  1. Channel Attention Map:
+     Mc = sigma(MLP(AvgPool(F)) + MLP(MaxPool(F)))  in R^{B x C x 1 x 1}
+  2. Spatial Attention Map:
+     Ms = sigma(Conv7x7([AvgPool_c(F); MaxPool_c(F)]))  in R^{B x 1 x H x W}
+  3. Channel-Spatial Disagreement Map:
+     D = |Mc - Ms|  in R^{B x C x H x W} (broadcasted)
+  4. Disagreement-Guided Refined Attention Map:
+     M_new = Ms + gamma * D  in R^{B x C x H x W}
+  5. Refined Feature Map:
+     F_out = F (x) M_new
+
+Learnable Gamma Parameter:
+  - Initialized: gamma = 0.1
+  - Learned Stage 1 (256ch):  0.10451
+  - Learned Stage 2 (512ch):  0.10143
+  - Learned Stage 3 (1024ch): 0.10247
+  - Learned Stage 4 (1024ch): 0.13257
+  - Mean Learned Gamma:       0.11024
+
+Parameter Comparison:
+  - DenseNet121 Baseline:   6,955,842 parameters
+  - DenseNet121 + CBAM:      7,259,402 parameters (+303,560 params / +4.36%)
+  - DenseNet121 + DG-CBAM:   7,259,406 parameters (+303,564 params / +4.36%)
+  - Device Selected:         cuda
+
+================================================================================
+4. TRAINING CONVERGENCE & BEST EPOCH
+================================================================================
+  - Batch Size:         32
+  - Optimizer:          AdamW (lr=0.0001, weight_decay=0.0001)
+  - LR Scheduler:       ReduceLROnPlateau (factor=0.5, patience=2, min_lr=1e-6)
+  - Loss Function:      Weighted CrossEntropyLoss (FRACTURE: 1.24475, NO_FRACTURE: 0.83568)
+  - Class Weight Base:  BFRMX Training Set ONLY
+  - Best Epoch:         12
+  - Best Val Loss:      0.0024
+  - Best Val Accuracy:  1.0000 (100.00%)
+  - Best Val F1-Score:  1.0000
+  - Best Val ROC-AUC:   1.0000
+
+================================================================================
+5. BFRMX INTERNAL TEST SET PERFORMANCE
+================================================================================
+Total Test Samples:             560
+Classification Accuracy:        0.9964 (99.64%)
+Macro Precision:                0.9970
+Macro Recall:                   0.9956
+Macro F1-Score:                 0.9963
+Fracture Precision:             1.0000
+Fracture Sensitivity (Recall):  0.9912
+Fracture F1-Score:              0.9956
+Specificity (No-Fracture Rec):  1.0000
+Area Under ROC Curve (ROC-AUC): 0.9999
+
+Confusion Matrix Breakdown:
+- True Positives  (TP - Fracture correctly predicted):    224
+- True Negatives  (TN - No-Fracture correctly predicted): 334
+- False Positives (FP - No-Fracture predicted Fracture):  0
+- False Negatives (FN - Fracture missed):                 2
+
+================================================================================
+6. FRACATLAS EXTERNAL BENCHMARK PERFORMANCE
+================================================================================
+Total External Samples:         4068
+Classification Accuracy:        0.4009 (40.09%)
+Macro Precision:                0.5466
+Macro Recall:                   0.5661
+Macro F1-Score:                 0.3931
+Fracture Precision:             0.2021
+Fracture Sensitivity (Recall):  0.8205
+Fracture F1-Score:              0.3244
+Specificity (No-Fracture Rec):  0.3118
+Area Under ROC Curve (ROC-AUC): 0.6336
+
+Confusion Matrix Breakdown:
+- True Positives  (TP - Fracture correctly predicted):    585
+- True Negatives  (TN - No-Fracture correctly predicted): 1046
+- False Positives (FP - No-Fracture predicted Fracture):  2309
+- False Negatives (FN - Fracture missed):                 128
+
+================================================================================
+7. THREE-MODEL COMPARISON TABLE (DENSENET121 vs CBAM vs DG-CBAM)
+================================================================================
+Evaluation Metric             DenseNet121 Baseline    DenseNet121 + CBAM    DenseNet121 + DG-CBAM
+----------------------------------------------------------------------------------------------------
+Architecture Attention:       None                    Standard CBAM         Proposed DG-CBAM
+Total Parameters:             6,955,842               7,259,402             7,259,406
+Best Validation Epoch:        Epoch 7                 Epoch 4                 Epoch 12
+----------------------------------------------------------------------------------------------------
+BFRMX Internal Accuracy:      99.64%                 99.82%                99.64%
+BFRMX Internal Precision:     0.9963                  0.9985                 0.9970
+BFRMX Internal Recall:        0.9963                  0.9978                 0.9956
+BFRMX Internal F1-Score:      0.9963                  0.9981                 0.9963
+BFRMX Internal Specificity:   0.9970                  1.0000                 1.0000
+BFRMX Internal ROC-AUC:       0.9999                  0.9992                 0.9999
+BFRMX TP / FN / FP / TN:      225 / 1 / 1 / 333       225 / 1 / 0 / 334     224 / 2 / 0 / 334
+----------------------------------------------------------------------------------------------------
+FracAtlas External Accuracy:  41.30%                 32.52%                40.09%
+FracAtlas External Precision: 0.5353                  0.5329                 0.5466
+FracAtlas External Recall:    0.5530                  0.5362                 0.5661
+FracAtlas External F1-Score:  0.4006                  0.3249                 0.3931
+FracAtlas Fracture Precision: 0.1978                  0.1883                 0.2021
+FracAtlas Fracture Recall:    0.7686                  0.8612                 0.8205
+FracAtlas Specificity:        0.3374                  0.2113                 0.3118
+FracAtlas External ROC-AUC:   0.6104                  0.5861                 0.6336
+FracAtlas TP / FN / FP / TN:  548 / 165 / 2223 / 1132 614 / 99 / 2646 / 709 585 / 128 / 2309 / 1046
+================================================================================
+
+================================================================================
+8. DETAILED FALSE-POSITIVE & FALSE-NEGATIVE COMPARATIVE ANALYSIS
+================================================================================
+FracAtlas Confusion Matrix Comparison (N = 4,068 total | 713 Fracture, 3,355 No-Fracture):
+
+1. True Positives (Fractures Detected):
+   - Baseline: 548 (76.86% sensitivity)
+   - CBAM:     614 (86.12% sensitivity)
+   - DG-CBAM:  585 (82.05% sensitivity)
+
+2. False Negatives (Missed Fractures):
+   - Baseline: 165 missed
+   - CBAM:     99 missed
+   - DG-CBAM:  128 missed
+
+3. False Positives (No-Fracture Misdiagnosed as Fracture):
+   - Baseline: 2,223 false positives
+   - CBAM:     2,646 false positives
+   - DG-CBAM:  2309 false positives
+
+4. True Negatives (No-Fracture Correctly Ruled Out):
+   - Baseline: 1,132 (33.74% specificity)
+   - CBAM:     709 (21.13% specificity)
+   - DG-CBAM:  1046 (31.18% specificity)
+
+================================================================================
+9. OBJECTIVE RESEARCH INTERPRETATION & DISCUSSION
+================================================================================
+1. Internal Test Set:
+   All three models exhibit ceiling performance on BFRMX internal test (99.64% - 99.82%),
+   demonstrating that DenseNet121, CBAM, and DG-CBAM are all highly capable of fitting
+   and generalizing within identically acquired radiographic distributions.
+
+2. Cross-Domain Generalization (FracAtlas):
+   - Standard CBAM increased fracture recall (+9.26%) over baseline, but at the cost of
+     higher false positive rate (2,646 FP) on the negative cohort, reducing accuracy to 32.52%.
+   - DG-CBAM's disagreement mechanism |Mc - Ms| modulates spatial attention using channel
+     disagreement with learned scaling gamma.
+   - The comparative evidence shows how DG-CBAM balances sensitivity vs specificity across
+     different radiographic scanner distributions.
+
+3. Scientific Conclusion:
+   The empirical evidence provides clear, unmanipulated metrics for evaluating the
+   utility of disagreement guidance in medical image attention mechanisms.
+
+================================================================================
+10. COMPLIANCE & RESEARCH INTEGRITY CONFIRMATIONS
+================================================================================
+[CONFIRMED] Dataset Unchanged: 0 images modified, added, removed, or relabeled.
+[CONFIRMED] Split Unchanged: Identical BFRMX train/val/test splits used.
+[CONFIRMED] FracAtlas Isolation: FracAtlas was NEVER used during training, validation,
+            class-weight computation, or early stopping.
+[CONFIRMED] Protocol Consistency: Identical AdamW optimizer, lr, scheduler, batch size,
+            and seed (42) were maintained.
+[CONFIRMED] DG-CBAM Implemented: M_new = Ms + gamma * |Mc - Ms| with learnable gamma.
+[CONFIRMED] No Future Components: No Grad-CAM, IoT, MQTT, or frontend implemented.
+================================================================================

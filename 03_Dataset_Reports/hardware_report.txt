@@ -1,0 +1,44 @@
+================================================================================
+BONEGUARD AI: ORTHOPEDIC HARDWARE AUDIT REPORT
+================================================================================
+TOTAL IMAGES ANALYZED: 14,664
+
+1. HARDWARE BREAKDOWN (COMBINED DATASETS):
+   - Total Images with Hardware Present: 268 (1.83%)
+   - Total Images without Hardware: 14,396 (98.17%)
+   - Unknown Hardware Status: 0 (0.00%)
+
+2. CROSS-TABULATION MATRIX:
+   +------------------------------+--------------------+---------------------+
+   | Category                     | Count              | Percentage          |
+   +------------------------------+--------------------+---------------------+
+   | Fracture + Hardware          | 214                |              1.46% |
+   | Fracture + No Hardware       | 5,684              |             38.76% |
+   | No Fracture + Hardware       | 54                 |              0.37% |
+   | No Fracture + No Hardware    | 8,712              |             59.41% |
+   | Unknown Hardware             | 0                  |              0.00% |
+   +------------------------------+--------------------+---------------------+
+
+3. DATASET-SPECIFIC HARDWARE BREAKDOWN:
+   BFRMX (Raw Dataset Total: 10,581):
+   - Hardware Present: 169 (1.60%)
+   - Hardware Absent: 10,412 (98.40%)
+
+   FracAtlas (Official Metadata Ground Truth Total: 4,083):
+   - Hardware Present: 99 (2.42%)
+   - Hardware Absent: 3,984 (97.58%)
+
+4. SPLIT-LEVEL 4-WAY COMBINATION MATRIX (CURRENT CLEANED DATASETS):
+   +------------------------------+--------------------+--------------------+--------------------+---------------------+
+   | Category                     | BFRMX Train (2609) | BFRMX Val (560)    | BFRMX Test (560)   | FracAtlas Ext (4068)|
+   +------------------------------+--------------------+--------------------+--------------------+---------------------+
+   | 1. Fracture + Hardware       | 42 (1.61%)         | 14 (2.50%)         | 7 (1.25%)          | 97 (2.38%)          |
+   | 2. Fracture + No Hardware    | 1,006 (38.56%)     | 211 (37.68%)       | 219 (39.11%)       | 616 (15.14%)        |
+   | 3. No Fracture + Hardware    | 5 (0.19%)          | 0 (0.00%)          | 0 (0.00%)          | 2 (0.05%)           |
+   | 4. No Fracture + No Hardware | 1,556 (59.64%)     | 335 (59.82%)       | 334 (59.64%)       | 3,353 (82.42%)      |
+   +------------------------------+--------------------+--------------------+--------------------+---------------------+
+   | Total Hardware Present       | 47 (1.80%)         | 14 (2.50%)         | 7 (1.25%)          | 99 (2.43%)          |
+   | Subtotal Fracture            | 1,048 (40.17%)     | 225 (40.18%)       | 226 (40.36%)       | 713 (17.53%)        |
+   | Subtotal No Fracture         | 1,561 (59.83%)     | 335 (59.82%)       | 334 (59.64%)       | 3,355 (82.47%)      |
+   +------------------------------+--------------------+--------------------+--------------------+---------------------+
+================================================================================

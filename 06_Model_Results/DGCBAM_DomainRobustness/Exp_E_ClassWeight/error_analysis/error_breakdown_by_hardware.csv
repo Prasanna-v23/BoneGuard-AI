@@ -1,0 +1,3 @@
+hardware_status,total_samples,exp_e_TP,exp_e_TN,exp_e_FP,exp_e_FN,exp_e_accuracy,exp_e_fp_rate
+HARDWARE_ABSENT,3969,464,1492,1861,152,49.28,55.5
+HARDWARE_PRESENT,99,73,1,1,24,74.75,50.0

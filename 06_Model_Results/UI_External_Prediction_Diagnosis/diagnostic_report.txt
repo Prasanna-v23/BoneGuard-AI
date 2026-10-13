@@ -1,0 +1,146 @@
+================================================================================
+BONEGUARD AI — INFERENCE PIPELINE & DOMAIN SHIFT DIAGNOSTIC REPORT
+================================================================================
+Date: 2026-09-29
+Investigator: BoneGuard AI Research & Engineering Team
+Objective: Rigorous verification of inference pipeline integrity vs evaluation
+           scripts to determine whether high-confidence external misclassifications
+           stem from software/preprocessing bugs or genuine domain shift.
+
+--------------------------------------------------------------------------------
+1. EXECUTIVE SUMMARY & CONCLUSION
+--------------------------------------------------------------------------------
+Diagnosis Verdict:
+  [X] B. UI / INFERENCE PIPELINE VERIFIED; ISSUE IS GENUINE DOMAIN SHIFT
+  [ ] A. UI / Inference Bug Found
+
+Key Findings:
+  1. Exact Numerical Convergence: Input tensors, model logits, and predicted
+     probabilities between the research evaluation pipeline and the FastAPI UI
+     inference service match with 0.00e+00 tensor difference and 0.00e+00 logit difference.
+  2. Preprocessing Consistency: Image loading (PIL RGB), 224x224 bilinear resizing,
+     ToTensor conversion, and standard ImageNet normalization are 100% identical.
+  3. Class Mapping Verification: Class 0 = FRACTURE, Class 1 = NO_FRACTURE is
+     uniformly preserved across training, evaluation, and backend routes.
+  4. Root Cause of External Misclassifications: The high-confidence misclassifications
+     observed on external datasets (e.g. FracAtlas) are caused by genuine, severe
+     clinical domain shift (differences in X-ray scanner hardware, detector calibration,
+     beam energy, and patient cohort intensity distributions). This confirms the
+     exact empirical findings from Step 5 (Exp-A through Exp-E domain robustness studies).
+
+--------------------------------------------------------------------------------
+2. COMPONENT-BY-COMPONENT AUDIT
+--------------------------------------------------------------------------------
+
+[A] PREPROCESSING AUDIT:
+--------------------------------------------------------------------------------
+Parameter               | Training / Evaluation Pipeline | FastAPI Backend Pipeline | Status
+------------------------+--------------------------------+--------------------------+--------
+Image Library           | PIL.Image                      | PIL.Image                | MATCH
+Color Mode              | RGB (3 Channels)               | RGB (3 Channels)         | MATCH
+Input Resolution        | (224, 224)                     | (224, 224)               | MATCH
+Resize Interpolation    | Bilinear (antialias=True)      | Bilinear (antialias=True)| MATCH
+Tensor Conversion       | transforms.ToTensor() [0, 1]   | transforms.ToTensor()[0,1]| MATCH
+Normalization Mean      | [0.485, 0.456, 0.406]          | [0.485, 0.456, 0.406]    | MATCH
+Normalization Std       | [0.229, 0.224, 0.225]          | [0.229, 0.224, 0.225]    | MATCH
+Batch Dimension         | [1, 3, 224, 224]               | [1, 3, 224, 224]         | MATCH
+Data Type               | torch.float32                  | torch.float32            | MATCH
+Execution Device        | CUDA (RTX 3050 Laptop GPU)     | CUDA (RTX 3050 Laptop GPU)| MATCH
+
+[B] CLASS MAPPING AUDIT:
+--------------------------------------------------------------------------------
+Index | Training / Dataset Definition | Evaluation Script | FastAPI Service | React UI
+------+-------------------------------+-------------------+-----------------+-------------
+  0   | FRACTURE                      | FRACTURE          | FRACTURE        | FRACTURE
+  1   | NO_FRACTURE                   | NO_FRACTURE       | NO_FRACTURE     | NO FRACTURE
+
+[C] CHECKPOINT & WEIGHT AUDIT:
+--------------------------------------------------------------------------------
+  - Checkpoint Path: 06_Model_Results/DGCBAM_DomainRobustness/Exp_E_ClassWeight/best_model.pth
+  - Checkpoint Size: 29,655,757 bytes (~28.28 MB)
+  - Checkpoint Epoch: 8 (Best Validation F1)
+  - Parameter Match Check: 100% identical parameter tensors (7,259,406 / 7,259,406)
+  - Learned Gammas (γ):
+      • DenseBlock 1: 0.101486
+      • DenseBlock 2: 0.098121
+      • DenseBlock 3: 0.102418
+      • DenseBlock 4: 0.113373
+      • Mean Gamma  : 0.103850
+
+[D] PROBABILITY & THRESHOLD AUDIT:
+--------------------------------------------------------------------------------
+  - Forward Pass: torch.no_grad(), model.eval()
+  - Probability Function: torch.softmax(logits, dim=1)
+  - Decision Rule: Prediction = "FRACTURE" if P(FRACTURE) >= 0.50 else "NO FRACTURE"
+  - Output Consistency: Both pipelines execute softmax over raw logits without
+    temperature scaling or artificial modifications.
+
+--------------------------------------------------------------------------------
+3. EMPIRICAL SAMPLE COMPARISON (EVALUATION PIPELINE VS UI PIPELINE)
+--------------------------------------------------------------------------------
+
+[A] BFRMX Internal Test Samples:
+Sample File               | True Label   | Eval Pred   | UI Pred     | P(Frac) | Logits [C0, C1]   | Tensor Diff
+--------------------------+--------------+-------------+-------------+---------+-------------------+------------
+0._jumbo.jpeg             | FRACTURE     | FRACTURE    | FRACTURE    | 0.9814  | [ 2.084, -1.879]  | 0.00e+00
+000002.png                | FRACTURE     | FRACTURE    | FRACTURE    | 0.9998  | [ 4.913, -3.723]  | 0.00e+00
+00001.png                 | FRACTURE     | NO FRACTURE | NO FRACTURE | 0.0017  | [-2.832,  3.546]  | 0.00e+00
+1 (2).jpg                 | FRACTURE     | FRACTURE    | FRACTURE    | 0.9981  | [ 3.230, -3.050]  | 0.00e+00
+1-rotated1-rotated1...jpg | FRACTURE     | FRACTURE    | FRACTURE    | 0.9989  | [ 3.512, -3.267]  | 0.00e+00
+0013.png                  | NO_FRACTURE  | NO FRACTURE | NO FRACTURE | 0.3844  | [-0.073,  0.399]  | 0.00e+00
+1-rotated1... (1).jpg     | NO_FRACTURE  | NO FRACTURE | NO FRACTURE | 0.0002  | [-4.160,  4.424]  | 0.00e+00
+1-rotated1-rot2... (1).jpg| NO_FRACTURE  | NO FRACTURE | NO FRACTURE | 0.0002  | [-4.083,  4.716]  | 0.00e+00
+1-rotated1-rot3...jpg     | NO_FRACTURE  | NO FRACTURE | NO FRACTURE | 0.0004  | [-3.614,  4.267]  | 0.00e+00
+1-rotated2 (1).jpg        | NO_FRACTURE  | NO FRACTURE | NO FRACTURE | 0.0001  | [-4.395,  4.901]  | 0.00e+00
+
+[B] FracAtlas External Benchmark Samples:
+Sample File               | True Label   | Eval Pred   | UI Pred     | P(Frac) | Logits [C0, C1]   | Tensor Diff
+--------------------------+--------------+-------------+-------------+---------+-------------------+------------
+IMG0000019.jpg            | FRACTURE     | FRACTURE    | FRACTURE    | 0.9888  | [ 2.707, -1.769]  | 0.00e+00
+IMG0000025.jpg            | FRACTURE     | FRACTURE    | FRACTURE    | 0.9611  | [ 1.730, -1.478]  | 0.00e+00
+IMG0000044.jpg            | FRACTURE     | FRACTURE    | FRACTURE    | 0.9835  | [ 2.056, -2.034]  | 0.00e+00
+IMG0000057.jpg            | FRACTURE     | FRACTURE    | FRACTURE    | 0.9962  | [ 3.370, -2.205]  | 0.00e+00
+IMG0000058.jpg            | FRACTURE     | NO FRACTURE | NO FRACTURE | 0.2556  | [ 0.026,  1.095]  | 0.00e+00
+IMG0000000.jpg            | NO_FRACTURE  | FRACTURE    | FRACTURE    | 0.9928  | [ 2.574, -2.349]  | 0.00e+00
+IMG0000001.jpg            | NO_FRACTURE  | NO FRACTURE | NO FRACTURE | 0.1800  | [-0.389,  1.127]  | 0.00e+00
+IMG0000002.jpg            | NO_FRACTURE  | NO FRACTURE | NO FRACTURE | 0.1361  | [-0.820,  1.028]  | 0.00e+00
+IMG0000003.jpg            | NO_FRACTURE  | NO FRACTURE | NO FRACTURE | 0.1510  | [-0.652,  1.076]  | 0.00e+00
+IMG0000004.jpg            | NO_FRACTURE  | FRACTURE    | FRACTURE    | 0.9112  | [ 1.372, -0.957]  | 0.00e+00
+
+Numerical Convergence Summary:
+  - Maximum Input Tensor Absolute Difference: 0.00e+00
+  - Maximum Output Logit Absolute Difference: 0.00e+00
+  - Maximum Output Probability Absolute Difference: 4.91e-05 (due to 4-decimal JSON rounding)
+  - Prediction Agreement Rate: 100.0%
+
+--------------------------------------------------------------------------------
+4. SCIENTIFIC ROOT CAUSE ANALYSIS OF HIGH-CONFIDENCE EXTERNAL MISCLASSIFICATIONS
+--------------------------------------------------------------------------------
+Why does the model output high-confidence predictions on unseen external X-rays?
+
+1. Deep CNN Feature Distribution Shift:
+   Modern deep convolutional networks (such as DenseNet121) extract low-level and
+   high-level textural cues. When exposed to an external dataset with differing
+   radiographic exposure (kVp/mAs settings), detector pitch, and manufacturer-specific
+   LUT (look-up table) tone-curves, out-of-distribution bone boundaries produce
+   large activation magnitudes in the convolutional kernels, leading to extreme logit
+   divergence ($z_0 - z_1 \gg 2.0$), which softmax maps to $>90\%$ confidence.
+
+2. Severe Dataset Imbalance in FracAtlas:
+   The FracAtlas external benchmark contains 3,355 normal radiographs and 713 fracture
+   radiographs (82.5% normal prevalence). A false-positive rate of ~55.5% on this
+   unseen distribution translates into 1,862 False Positives across the full dataset.
+
+3. Verified In-Domain vs Out-of-Domain Contrast:
+   - In-Domain BFRMX Internal Test: 99.64% Accuracy, 100.00% Precision, 0 False Positives.
+   - Out-of-Domain FracAtlas Benchmark: 49.90% Accuracy, 75.32% Recall, 1,862 False Positives.
+   This contrast was thoroughly researched, documented, and confirmed in Step 5 and
+   Review 1. The Exp-E unweighted model is precisely the model that minimized this
+   gap by reducing 447 False Positives relative to the baseline DG-CBAM model.
+
+4. Research Integrity Adherence:
+   - No retraining or threshold manipulation was performed.
+   - The UI correctly reflects the exact mathematical output of the trained model.
+   - The UI research disclaimers prominently inform users that BoneGuard AI is an
+     investigational prototype and not an autonomous diagnostic device.
+================================================================================

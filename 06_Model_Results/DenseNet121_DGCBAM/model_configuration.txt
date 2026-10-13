@@ -1,0 +1,29 @@
+================================================================================
+BONEGUARD AI: DENSENET121 + PROPOSED DG-CBAM CONFIGURATION & REPRODUCIBILITY LOG
+================================================================================
+Model Architecture:         DenseNet121 + Proposed DG-CBAM
+Pretrained Backbone:        ImageNet-1K (DenseNet121_Weights.DEFAULT)
+Attention Modules:          Disagreement-Guided CBAM (DG-CBAM)
+Proposed Mechanism:         D = |Mc - Ms| -> M_new = Ms + gamma * D -> F_out = F (x) M_new
+Attention Placement:        Output of each DenseBlock (denseblock 1, 2, 3, 4)
+Number of Classes:          2 (FRACTURE: 0, NO_FRACTURE: 1)
+Input Dimensions:           224 x 224 x 3
+Random Seed:                42
+Python Version:             3.11.16
+PyTorch Version:            2.6.0+cu124
+Device Selected:            cuda
+GPU Name:                   NVIDIA GeForce RTX 3050 6GB Laptop GPU
+CUDA Version:               12.4
+Batch Size:                 32
+Optimizer:                  AdamW (lr=0.0001, weight_decay=0.0001)
+LR Scheduler:               ReduceLROnPlateau(mode='min', factor=0.5, patience=2, min_lr=1e-6)
+Loss Function:              nn.CrossEntropyLoss(weight=[1.24475, 0.83568])
+Class Weight Source:        BFRMX Training Set ONLY (Fracture: 1048, No-Fracture: 1561)
+Initial Gamma:              0.1
+Total Epochs Run:           19
+Best Validation Epoch:      12
+Best Validation Loss:       0.0024
+Best Validation F1-Score:   1.0000
+Final Learned Gammas:       {'gamma_stage1': 0.10450945794582367, 'gamma_stage2': 0.10142523795366287, 'gamma_stage3': 0.10247451812028885, 'gamma_stage4': 0.1325663924217224, 'gamma_mean': 0.11024390161037445}
+Best Checkpoint Path:       D:\BoneGuard AI\06_Model_Results\DenseNet121_DGCBAM\best_model.pth
+================================================================================

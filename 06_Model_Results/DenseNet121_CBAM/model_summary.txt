@@ -1,0 +1,21 @@
+================================================================================
+BONEGUARD AI: DENSENET121 + STANDARD CBAM MODEL ARCHITECTURE SUMMARY
+================================================================================
+Backbone:                   DenseNet-121 (DenseNet)
+Feature Extractor:          121 layers with 4 DenseBlocks and Transition Layers
+Attention Mechanism:        Standard CBAM (Woo et al., ECCV 2018)
+CBAM Modules:
+  - cbam1: Channel Attention (256 ch, r=16) + Spatial Attention (7x7 conv) -> 8,290 params
+  - cbam2: Channel Attention (512 ch, r=16) + Spatial Attention (7x7 conv) -> 32,866 params
+  - cbam3: Channel Attention (1024 ch, r=16) + Spatial Attention (7x7 conv) -> 131,170 params
+  - cbam4: Channel Attention (1024 ch, r=16) + Spatial Attention (7x7 conv) -> 131,170 params
+Total CBAM Parameters:      303,560
+In-Features to Classifier:  1024
+Classifier:                 nn.Linear(in_features=1024, out_features=2, bias=True)
+Total Parameters:           7,259,402
+Trainable Parameters:       7,259,402
+Non-Trainable Parameters:   0
+Output Classes:             2 classes -> [0: FRACTURE, 1: NO_FRACTURE]
+Input Spatial Shape:        [Batch_Size, 3, 224, 224]
+Final Logits Shape:         [Batch_Size, 2]
+================================================================================

@@ -1,0 +1,2 @@
+dataset,total_samples,accuracy,precision_macro,recall_macro,f1_macro,precision_fracture,recall_fracture (sensitivity),f1_fracture,specificity,roc_auc,true_positives (TP),true_negatives (TN),false_positives (FP),false_negatives (FN)
+FracAtlas_external_test,4068,0.3252212389380531,0.5329094029034805,0.5362382243328603,0.3248530390609833,0.18834355828220858,0.8611500701262272,0.30908633274603575,0.2113263785394933,0.5861091544511865,614,709,2646,99

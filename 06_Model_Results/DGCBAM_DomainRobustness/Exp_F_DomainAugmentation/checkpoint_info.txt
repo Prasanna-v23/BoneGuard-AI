@@ -1,0 +1,13 @@
+BONEGUARD AI — EXP F CHECKPOINT INFORMATION
+============================================================
+Checkpoint File: D:\BoneGuard AI\06_Model_Results\DGCBAM_DomainRobustness\Exp_F_DomainAugmentation\best_model.pth
+Best Epoch: 9
+Total Parameters: 7,259,406
+Trainable Parameters: 7,259,406
+Learned Gamma Stage 1: 0.102893
+Learned Gamma Stage 2: 0.098293
+Learned Gamma Stage 3: 0.098230
+Learned Gamma Stage 4: 0.114806
+Learned Gamma Mean:    0.103556
+Best BFRMX Val F1:      99.78%
+Best BFRMX Val Acc:     99.82%

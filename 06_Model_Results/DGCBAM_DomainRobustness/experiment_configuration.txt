@@ -1,0 +1,22 @@
+BONEGUARD AI — STEP 6 EXPERIMENT CONFIGURATION
+==================================================
+Date: 2026-09-28
+Architecture: DenseNet121 + Proposed DG-CBAM
+Input Resolution: 224 x 224 x 3
+Optimizer: AdamW (Weight Decay = 1e-4)
+Initial Learning Rate: 1e-4
+Scheduler: CosineAnnealingLR (T_max = 25, eta_min = 1e-6)
+Batch Size: 32
+Max Epochs: 25
+Early Stopping Patience: 7
+Random Seed: 42
+Initial Gamma: 0.1 (Learnable scalar per stage)
+Target Layer for Grad-CAM: model.features.norm5
+Evaluated Experiments:
+  1. Exp_A_Control: Standard reproduction
+  2. Exp_B_RobustNorm: 1st-99th percentile X-ray normalization
+  3. Exp_C_ConservativeAug: Medically plausible conservative augmentation
+  4. Exp_D_FineTuning: Two-phase staged transfer learning
+  5. Exp_E_ClassWeight: Unweighted CrossEntropyLoss [1.0, 1.0]
+Best Configuration Selected (BFRMX Validation): Exp_B_RobustNorm (Robust X-Ray Intensity Percentile Normalization)
+Best Model Checkpoint: D:\BoneGuard AI\06_Model_Results\DGCBAM_DomainRobustness\Final_Model\best_model.pth

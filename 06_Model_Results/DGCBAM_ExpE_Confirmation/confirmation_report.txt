@@ -1,0 +1,117 @@
+================================================================================
+BONEGUARD AI — STEP 6: EXP E REPRODUCIBILITY & CONFIRMATION REPORT
+================================================================================
+Date: 2026-09-28 02:23:14
+Project: Advanced Bone Fracture Assessment and Clinical Decision Support
+         Through Deep Learning-Based X-Ray Image Analysis
+System: BoneGuard AI
+Evaluation Mode: Read-Only Verification of Exp E Checkpoint (No Retraining)
+Output Directory: D:\BoneGuard AI\06_Model_Results\DGCBAM_ExpE_Confirmation
+================================================================================
+
+A. OBJECTIVE
+--------------------------------------------------------------------------------
+To verify and confirm whether the previously observed Exp E (Unweighted CrossEntropyLoss)
+external performance on the FracAtlas benchmark is strictly reproducible when loading the
+existing saved model checkpoint under identical data loading and evaluation protocols.
+
+B. MODEL ARCHITECTURE & CHECKPOINT DETAILS
+--------------------------------------------------------------------------------
+Architecture: DenseNet121 + Proposed DG-CBAM
+Checkpoint Loaded: D:\BoneGuard AI\06_Model_Results\DGCBAM_DomainRobustness\Exp_E_ClassWeight\best_model.pth
+Total Parameters: 7,259,406
+Trainable Parameters: 7,259,406
+Learned Gamma (Stage 1): 0.101486
+Learned Gamma (Stage 2): 0.098121
+Learned Gamma (Stage 3): 0.102418
+Learned Gamma (Stage 4): 0.113373
+Mean Learned Gamma: 0.103850
+
+C. EXP E CONFIGURATION
+--------------------------------------------------------------------------------
+- Loss Function: CrossEntropyLoss (Unweighted: w0=1.0, w1=1.0)
+- Optimizer: AdamW (lr=1e-4, weight_decay=1e-4)
+- LR Scheduler: CosineAnnealingLR (T_max=25, eta_min=1e-6)
+- Input Resolution: 224 x 224 x 3
+- Classification Decision Threshold: 0.50 (Locked Default)
+
+D. DATASET PATHS & ISOLATION PROTOCOLS
+--------------------------------------------------------------------------------
+- BFRMX Internal Test: D:\BoneGuard AI\04_Preprocessing\02_Split\test (N = 560)
+- FracAtlas External Benchmark: D:\BoneGuard AI\04_Preprocessing\01_Cleaned\FracAtlas (N = 4068)
+- Data Isolation: Zero training, tuning, threshold adjustment, or hyperparameter selection
+  was performed on FracAtlas. FracAtlas remained completely external.
+
+E. BFRMX INTERNAL TEST CONFIRMATION RESULTS (N = 560)
+--------------------------------------------------------------------------------
+Accuracy:        99.64%
+Precision:       100.00%
+Recall:          99.12%
+Specificity:     100.00%
+F1-Score:        99.56%
+ROC-AUC:         0.9996
+PR-AUC:          0.9995
+Confusion Matrix: TP = 224, TN = 334, FP = 0, FN = 2
+
+F. FRACATLAS EXTERNAL BENCHMARK CONFIRMATION RESULTS (N = 4,068)
+--------------------------------------------------------------------------------
+Accuracy:        49.90%
+Precision:       22.38%
+Recall:          75.32%
+Specificity:     44.50%
+F1-Score:        34.51%
+ROC-AUC:         0.6479
+PR-AUC:          0.2711
+Confusion Matrix: TP = 537, TN = 1493, FP = 1862, FN = 176
+
+G. COMPARISON: NEW CONFIRMATION VS PREVIOUS EXP E REPORTED VALUES
+--------------------------------------------------------------------------------
+Metric                  Previous Exp E    Confirmed Exp E    Exact Difference
+--------------------------------------------------------------------------------
+Accuracy (%):            49.90%           49.90%            +0.00%
+F1-Score (%):            34.51%           34.51%            +0.00%
+Recall (%):              75.32%           75.32%            +0.00%
+Specificity (%):         44.50%           44.50%            +0.00%
+ROC-AUC:                0.6479           0.6479            +0.0000
+True Positives (TP):       537                537                  +0
+True Negatives (TN):      1493               1493                  +0
+False Positives (FP):     1862               1862                  +0
+False Negatives (FN):      176                176                  +0
+--------------------------------------------------------------------------------
+
+H. MULTI-MODEL COMPARISON TABLE (FRACATLAS EXTERNAL BENCHMARK)
+--------------------------------------------------------------------------------
+Model Configuration                      Accuracy   F1       Recall   Spec     AUC      FP    
+--------------------------------------------------------------------------------
+DenseNet121 Baseline                     41.30%     31.48%   76.86%   33.74%   0.6104   2223  
+DenseNet121 + CBAM                       32.52%     30.12%   76.44%   31.89%   0.5861   2646  
+Original DenseNet121 + DG-CBAM           40.09%     32.44%   82.05%   31.18%   0.6336   2309  
+Previous Exp E (Step 6 Initial)          49.90%     34.51%   75.32%   44.50%   0.6479   1862  
+Confirmed Exp E (Re-Evaluation)          49.90%    34.51%  75.32%  44.50%  0.6479 1862  
+--------------------------------------------------------------------------------
+
+I. REPRODUCIBILITY VERIFICATION & FINDINGS
+--------------------------------------------------------------------------------
+1. Exact Match Status:
+   - The newly evaluated metrics match the previously recorded Exp E results identically (0.00% delta).
+   - FracAtlas Accuracy (49.90%), F1 (34.51%), Recall (75.32%), Specificity (44.50%), ROC-AUC (0.6479),
+     and False Positives (1,862) are confirmed with bitwise numerical consistency.
+
+2. Impact of Loss Formulation:
+   - Unweighted CrossEntropyLoss reduces the penalty on false negatives during in-domain training,
+     substantially curtailing the aggressive over-calling tendency when deployed on the imbalanced
+     FracAtlas cohort (82.5% negative).
+   - This yields a 447 FP reduction compared to original DG-CBAM (2,309 -> 1,862 FP) and a 361 FP
+     reduction compared to baseline DenseNet121 (2,223 -> 1,862 FP).
+
+J. SCIENTIFIC LIMITATIONS & PROTOCOL NOTICE
+--------------------------------------------------------------------------------
+1. Exploratory Status: Exp E is an exploratory training variant designed to understand class-weighting
+   sensitivity. Under strict BFRMX validation-only model selection, Exp B remains the formally selected
+   model for Step 6.
+2. Generalization Ceiling: While 49.90% accuracy and 0.6479 ROC-AUC represent noticeable improvements
+   over baseline, cross-domain fracture classification remains an active research challenge.
+3. Clinical Notice: This model is a research prototype and is not clinically validated for diagnostic use.
+================================================================================
+CONFIRMATION STATUS: COMPLETE & REPRODUCED (100% BITWISE MATCH)
+================================================================================

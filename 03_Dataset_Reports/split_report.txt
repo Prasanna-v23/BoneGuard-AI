@@ -1,0 +1,38 @@
+================================================================================
+BONEGUARD AI: DATASET SPLIT & CLASS BALANCE REPORT (POST-EXCLUSION)
+================================================================================
+
+1. BFRMX PRIMARY DATASET SPLITS (70% Train / 15% Val / 15% Test):
+
+   TRAINING SET:
+   - Total Images: 2,611 (69.98%)
+   - Fracture Count: 1,050 (40.21%)
+   - No Fracture Count: 1,561 (59.79%)
+   - Hardware Present: 51
+
+   VALIDATION SET:
+   - Total Images: 560 (15.01%)
+   - Fracture Count: 225 (40.18%)
+   - No Fracture Count: 335 (59.82%)
+   - Hardware Present: 15
+
+   INTERNAL TEST SET:
+   - Total Images: 560 (15.01%)
+   - Fracture Count: 226 (40.36%)
+   - No Fracture Count: 334 (59.64%)
+   - Hardware Present: 9
+
+2. FRACATLAS EXTERNAL BENCHMARK DATASET:
+   - Total Images: 4,068 (100% External Test / External Validation)
+   - Fracture Count: 713 (17.53%)
+   - No Fracture Count: 3,355 (82.47%)
+   - Hardware Present: 99
+
+3. DATA LEAKAGE & SHORTCUT AUDIT:
+   - Train <-> Validation overlap: 0 images
+   - Train <-> Test overlap: 0 images
+   - Validation <-> Test overlap: 0 images
+   - Development Splits <-> FracAtlas overlap: 0 images
+   - Manually drawn overlays in splits: 0 images
+   - Zero data leakage & zero shortcut annotations confirmed across all partitions.
+================================================================================

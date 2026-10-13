@@ -1,0 +1,2 @@
+accuracy,precision,recall,f1,roc_auc,loss,best_epoch
+1.0,1.0,1.0,1.0,1.0,0.0029195905097627213,7

@@ -1,0 +1,16 @@
+BONEGUARD AI — EXP E CHECKPOINT INFORMATION
+============================================================
+Checkpoint Path: D:\BoneGuard AI\06_Model_Results\DGCBAM_DomainRobustness\Exp_E_ClassWeight\best_model.pth
+Checkpoint File Size: 29653669 bytes (28.28 MB)
+Model Architecture: DenseNet121 + Proposed DG-CBAM
+Total Parameters: 7,259,406
+Trainable Parameters: 7,259,406
+Learned Gamma Stage 1: 0.101486
+Learned Gamma Stage 2: 0.098121
+Learned Gamma Stage 3: 0.102418
+Learned Gamma Stage 4: 0.113373
+Learned Gamma Mean: 0.103850
+PyTorch Version: 2.6.0+cu124
+CUDA Available: True
+GPU Name: NVIDIA GeForce RTX 3050 6GB Laptop GPU
+GPU Capability: (8, 6)

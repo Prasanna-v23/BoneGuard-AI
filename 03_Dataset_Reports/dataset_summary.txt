@@ -1,0 +1,36 @@
+================================================================================
+BONEGUARD AI: DATASET SUMMARY REPORT
+Project: Advanced Bone Fracture Assessment & Clinical Decision Support
+================================================================================
+
+1. PRIMARY DATASET: BFRMX (Bone Fracture Multi-Region X-ray Dataset)
+   - Role: Primary Development (Train, Validation, Internal Test)
+   - Total Raw Images: 10,581
+   - Image Format: PNG / JPEG
+   - Fracture Count: 5,181 (48.97%)
+   - No Fracture Count: 5,400 (51.03%)
+   - Unknown Labels: 0
+   - Hardware Present: 169 (1.60%)
+   - Exact Duplicates Excluded: 6,770
+   - Manual Annotations / Overlays Excluded: 80
+   - Final Usable Images (Development): 3,731
+
+2. EXTERNAL BENCHMARK DATASET: FracAtlas
+   - Role: External Validation / Generalization Test ONLY
+   - Total Raw Images: 4,083
+   - Image Format: JPEG
+   - Fracture Count: 717 (17.56%)
+   - No Fracture Count: 3,366 (82.44%)
+   - Unknown Labels: 0
+   - Hardware Present: 99 (2.42%)
+   - Exact Duplicates Excluded: 15
+   - Final Usable Images: 4,068
+
+3. COMBINED AGGREGATE SUMMARY
+   - Total Combined Raw Images: 14,664
+   - Total Fractured: 5,898
+   - Total Non-Fractured: 8,766
+   - Total Corrupted / Invalid Files: 0
+   - Total Excluded (Duplicates + Cross-Dataset + Overlays): 6,865
+   - Total Usable Cleaned Images: 7,799
+================================================================================

@@ -1,0 +1,22 @@
+BONEGUARD AI — EXPERIMENT F CONFIGURATION
+============================================================
+Experiment: Exp F (Domain-Robust Augmentation with Unweighted Loss)
+Architecture: DenseNet121 + Proposed DG-CBAM
+Total Parameters: 7,259,406
+Initial Gamma: 0.10
+Loss Function: Unweighted CrossEntropyLoss [1.0, 1.0]
+Optimizer: AdamW (lr=1e-4, weight_decay=1e-4)
+Scheduler: CosineAnnealingLR (T_max=25, eta_min=1e-6)
+Batch Size: 32
+Max Epochs: 25
+Early Stopping Patience: 7 epochs on BFRMX Val F1
+Random Seed: 42
+Domain Augmentations (Train Only):
+  - RandomRotation (8 deg)
+  - RandomAffine (translate 4%, scale 0.96-1.04)
+  - RandomHorizontalFlip (p=0.5)
+  - ColorJitter (brightness 0.15, contrast 0.15)
+  - RandomAdjustSharpness (factor 1.5, p=0.3)
+  - RandomAutocontrast (p=0.2)
+  - GaussianBlur (kernel 3, sigma 0.1-1.0)
+Data Isolation: FracAtlas was completely isolated during all training & model selection.

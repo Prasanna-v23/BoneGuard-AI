@@ -1,0 +1,128 @@
+================================================================================
+BONEGUARD AI: FINAL PREPROCESSING & DATASET REPORT (AFTER OVERLAY EXCLUSION)
+================================================================================
+Project Title: "Advanced Bone Fracture Assessment and Clinical Decision Support
+               Through Deep Learning-Based X-Ray Image Analysis"
+Author: Antigravity AI Data-Engineering Agent
+Model Architecture: DenseNet121 + DG-CBAM (Disagreement-Guided CBAM) [Target]
+Status: DATASET PREPROCESSING, CLEANING & PREPARATION COMPLETE (MODEL NOT TRAINED)
+
+==================================================
+EXECUTIVE SUMMARY METRICS
+==================================================
+1.  Total BFRMX Raw Images:               10,581
+2.  Total FracAtlas Raw Images:           4,083
+3.  Fracture Count (Combined):            5,898
+4.  No-Fracture Count (Combined):         8,766
+5.  Unknown Labels:                       0
+6.  Total Orthopedic Hardware Identified: 268
+7.  Hardware + Fracture Count:            214
+8.  Hardware + No-Fracture Count:         54
+9.  Corrupted / Unreadable Images:        0
+10. Exact Duplicate Images Excluded:      6,787
+11. Manual Annotations / Overlays Excluded: 80
+12. Total Excluded Images:                6,867
+13. Final Usable Images (Combined):       7,797
+14. BFRMX Training Set Count:             2,609
+15. BFRMX Validation Set Count:           560
+16. BFRMX Internal Test Set Count:        560
+17. FracAtlas External Benchmark Count:   4,068
+
+==================================================
+BODY-REGION DISTRIBUTION (FracAtlas Ground Truth)
+==================================================
+- Hand Radiographs:      1,538
+- Leg / Foot / Knee:     2,273
+- Hip / Pelvis:            338
+- Shoulder / Clavicle:     349
+- Mixed Multi-Region:      398
+
+==================================================
+DATA LEAKAGE & SHORTCUT AUDIT
+==================================================
+- Train vs Validation Hash Overlap:        0 (CLEAN)
+- Train vs Internal Test Hash Overlap:     0 (CLEAN)
+- Validation vs Internal Test Hash Overlap: 0 (CLEAN)
+- BFRMX vs External FracAtlas Hash Overlap: 0 (CLEAN)
+- Manual Annotations in Model Splits:      0 (CLEAN)
+- Data Leakage & Shortcut Artifacts:       NONE DETECTED.
+
+==================================================
+CLASS DISTRIBUTION ACROSS PARTITIONS
+==================================================
+Training Set (BFRMX):
+  - Fracture:     1,048 (40.17%)
+  - No Fracture:  1,561 (59.83%)
+
+Validation Set (BFRMX):
+  - Fracture:     225 (40.18%)
+  - No Fracture:  335 (59.82%)
+
+Internal Test Set (BFRMX):
+  - Fracture:     226 (40.36%)
+  - No Fracture:  334 (59.64%)
+
+External Validation / Test Set (FracAtlas):
+  - Fracture:     713 (17.53%)
+  - No Fracture:  3,355 (82.47%)
+
+==================================================
+DATASET LIMITATIONS & MEDICAL AI CONSIDERATIONS
+==================================================
+1. Patient IDs: BFRMX is an open-access Kaggle benchmark dataset that does not
+   provide DICOM patient IDs in its filenames. Per project rules, we performed
+   strict cryptographic and visual deduplication to ensure no identical cases
+   appear across splits, but individual multi-view patient clustering cannot be
+   guaranteed without raw DICOM headers.
+2. Orthopedic Hardware: Metal hardware was detected and logged. BFRMX contains
+   cases with surgical fixation plates and screws. We recommend using DG-CBAM
+   disagreement attention during model development to ensure the model focuses
+   on cortical disruption rather than metal fixation devices.
+3. External Generalization: FracAtlas contains an 82.4% negative distribution,
+   which mirrors real-world clinical screening prevalence. Model evaluation on
+   FracAtlas should prioritize AUROC and F1-Score over raw accuracy.
+4. Shortcut Exclusion: All 80 manually annotated journal images containing red
+   arrows or drawn pointer overlays were excluded from model splits to prevent
+   shortcut learning, while preserving all original raw images untouched.
+
+==================================================
+COMPLETED DIRECTORY STRUCTURE
+==================================================
+BoneGuard_AI/
+├── 01_Raw_Datasets/
+│   ├── BFRMX/
+│   └── FracAtlas/
+├── 02_Metadata/
+│   ├── BFRMX_metadata.csv
+│   ├── FracAtlas_metadata.csv
+│   ├── hardware_analysis.csv
+│   ├── duplicate_analysis.csv
+│   ├── label_distribution.csv
+│   └── exclusion_log.csv
+├── 03_Dataset_Reports/
+│   ├── dataset_summary.txt
+│   ├── quality_report.csv
+│   ├── hardware_report.txt
+│   ├── duplicate_report.txt
+│   ├── split_report.txt
+│   └── visual_checks/
+│       ├── 01_normal_xrays.png
+│       ├── 02_fractured_xrays.png
+│       ├── 03_hardware_fracture.png
+│       ├── 04_hardware_no_fracture.png
+│       ├── 05_body_regions.png
+│       └── 06_augmented_samples.png
+├── 04_Preprocessing/
+│   ├── 01_Cleaned/
+│   │   ├── BFRMX/ (FRACTURE / NO_FRACTURE)
+│   │   └── FracAtlas/ (FRACTURE / NO_FRACTURE)
+│   ├── 02_Split/
+│   │   ├── train/ (FRACTURE / NO_FRACTURE)
+│   │   ├── validation/ (FRACTURE / NO_FRACTURE)
+│   │   └── test/ (FRACTURE / NO_FRACTURE)
+│   └── preprocessing.py
+├── 05_Code/
+│   ├── dataset_analysis.py
+│   └── scan_annotations.py
+└── FINAL_DATASET_REPORT.txt
+================================================================================

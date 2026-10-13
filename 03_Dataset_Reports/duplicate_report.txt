@@ -1,0 +1,24 @@
+================================================================================
+BONEGUARD AI: DUPLICATE & INTEGRITY REPORT
+================================================================================
+
+1. WITHIN BFRMX:
+   - Total Raw Images: 10,581
+   - Unique Cryptographic Images: 3,811
+   - Exact Duplicates Excluded: 6,770
+   - Manual Annotations Excluded: 80
+
+2. WITHIN FRACATLAS:
+   - Total Raw Images: 4,083
+   - Unique Cryptographic Images: 4,068
+   - Exact Duplicates Excluded: 15
+
+3. CROSS-DATASET OVERLAP (BFRMX vs FRACATLAS):
+   - Cross-Dataset Duplicates Identified: 229
+   - Action Taken: All cross-dataset duplicates were quarantined and excluded from BFRMX splits.
+   - Result: 0% data leakage into external validation benchmark.
+
+4. CORRUPTED & UNREADABLE FILES:
+   - Total Corrupted / Zero-byte Files: 0
+   - All files verified for valid decode integrity.
+================================================================================

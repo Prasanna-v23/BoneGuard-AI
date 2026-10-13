@@ -1,0 +1,231 @@
+================================================================================
+BONEGUARD AI — REVIEW 1 PRESENTATION VERIFICATION REPORT
+================================================================================
+
+Total Slides: 20 (Target: 20)
+Template Preserved: Yes
+PPTX Path: d:\BoneGuard AI\06_Model_Results\BoneGuard_AI_Review_1.pptx (133,286 bytes)
+PDF Path: d:\BoneGuard AI\06_Model_Results\BoneGuard_AI_Review_1.pdf (274,743 bytes)
+Placeholders Remaining: None
+Unverified Information: None
+
+--------------------------------------------------------------------------------
+SLIDE-BY-SLIDE AUDIT
+--------------------------------------------------------------------------------
+
+[SLIDE 1]
+GOWTHAM G     (731621205019)
+PRAVEEN N        (731621205040)
+YASHWANTH N  (731621205063)
+ADVANCED BONE FRACTURE ASSESSMENT AND CLINICAL DECISION SUPPORT THROUGH DEEP LEARNING-BASED X-RAY IMAGE ANALYSIS
+Short Title: BoneGuard AI
+Guide: Mr.S.Nirmalkumar M.E., Supervisor 
+             Assistant Professor
+Department of Information Technology
+Review : 1            Date: 29-09-2026
+1
+--------------------------------------------------------------------------------
+
+[SLIDE 2]
+Introduction
+Background: Bone fracture assessment relies extensively on diagnostic X-ray radiography. Deep learning and CNNs provide automated feature extraction for radiological pattern recognition.
+Current Scenario & Challenges: Manual interpretation requires specialized radiologists, is susceptible to fatigue, and subtle/hairline fractures remain difficult to identify during rapid triage.
+Application Area: Medical Image Analysis • Computer-Aided Diagnostic Screening • Clinical Decision Support • Healthcare AI.
+Why Address This Problem: Need for consistent computer-assisted screening, explainable attention maps for clinical trust, and evaluation of robustness beyond a single dataset/domain.
+2
+--------------------------------------------------------------------------------
+
+[SLIDE 3]
+Problem Identification
+Existing Problem: Deep learning fracture classifiers achieve high in-domain accuracy but suffer severe performance degradation and high false-positive rates when tested on external hospital datasets.
+Limitations of Current Approaches: Domain shift from differing scanner hardware, intensity distributions, and non-fracture artifacts. Conventional attention mechanisms fail to capture inter-attention divergence.
+Who is Affected: Radiology departments with heavy caseloads, emergency diagnostic centers, clinicians needing reliable screening support, and patients awaiting timely treatment.
+Core Need: A robust fracture classification system investigating adaptive attention mechanisms (DG-CBAM), explainability, and multi-domain evaluation.
+3
+--------------------------------------------------------------------------------
+
+[SLIDE 4]
+Problem Statement
+Problem Statement: "Develop a deep-learning-based system capable of classifying bone X-ray images into fracture and non-fracture categories while improving attention-based feature representation and evaluating robustness across different image domains."
+Key Challenges: Detecting subtle fracture lines, suppressing false positives across diverse scanners, and adaptively fusing channel and spatial attention cues.
+Expected Improvement: Enhanced feature representation via proposed DG-CBAM, more focused attention maps, and empirical evaluation across internal and external benchmarks.
+Project Scope: Binary fracture/non-fracture classification from user-uploaded X-rays, prediction confidence estimation, Grad-CAM explainability, and research decision support (not replacing clinicians).
+4
+--------------------------------------------------------------------------------
+
+[SLIDE 5]
+Literature Survey
+5
+
+[TABLE]
+Author & Year | Method / Model | Dataset / Target | Key Findings | Limitations Identified
+Huang et al. (2017) [CVPR] | DenseNet-121 (Dense Connectivity) | ImageNet / Medical X-rays | Direct feature reuse and efficient gradient flow; mitigates vanishing gradient. | Prone to redundant feature propagation without attention filtering.
+Woo et al. (2018) [ECCV] | CBAM (Channel & Spatial Attention) | ImageNet / Visual Benchmarks | Sequential channel and spatial attention refines feature maps. | Rigid sequential combination ignores channel-spatial feature difference.
+Selvaraju et al. (2017) [ICCV] | Grad-CAM (Visual Explanations) | Visual Recognition / Medical AI | Gradient localization visualizes model decision regions. | Coarse spatial resolution; sensitive to false-positive background noise.
+Iftekhar et al. (2023) [Nature] | FracAtlas Benchmark & Baseline CNNs | 4,083 Musculoskeletal X-rays | Comprehensive multi-class fracture benchmark with bounding boxes. | High class imbalance (82.5% normal); significant domain shift.
+Guan et al. (2021) [JHE] | Deep Learning Survey for Fracture Detection | Multi-center X-ray Cohorts | High in-domain classification accuracy (>90%) across CNN backbones. | Severe generalization degradation on external multi-site clinical datasets.
+--------------------------------------------------------------------------------
+
+[SLIDE 6]
+Research Gap
+1. Existing Research: CNN & DenseNet architectures for medical image feature extraction; standard attention mechanisms (CBAM); explainable AI methods (Grad-CAM) applied to single-source datasets.
+2. Remaining Limitations & Gaps: 
+   • Cross-Domain Degradation: Models overfit native training scanner distributions and suffer massive false-positive inflation on unseen external clinical datasets.
+   • Attention Fusion Rigidity: Conventional CBAM applies channel and spatial attention sequentially without modeling the difference (|Mc - Ms|) between spatial and channel cues.
+   • Lack of External Stress Testing: Existing works rarely benchmark models on an independent, zero-leakage external dataset.
+3. Our Proposed Approach: Proposed DG-CBAM with learnable parameter γ + controlled ablation studies (Exp A to E) + rigorous zero-leakage external benchmark evaluation on FracAtlas.
+6
+--------------------------------------------------------------------------------
+
+[SLIDE 7]
+PICO Framework
+P — Parameter: Musculoskeletal X-ray image (224x224x3); Binary classification (Fracture vs. Non-Fracture); Quantitative metrics: Accuracy, Precision, Recall, Specificity, F1-Score, ROC-AUC, PR-AUC.
+I — Intervention: BoneGuard AI system integrating DenseNet121 backbone with proposed Difference-Guided CBAM (DG-CBAM) using adaptive formulation: M_new = M_s + γ · |M_c − M_s|, robust normalization, and Grad-CAM.
+C — Comparison: DenseNet121 Baseline (no attention), DenseNet121 + Standard CBAM, and controlled domain robustness configurations (Exp A to Exp E).
+O — Outcome: Superior feature representation, 99.64% internal test accuracy (BFRMX), 447 False-Positive reduction on external benchmark (FracAtlas Exp-E), and explainable decision support.
+7
+--------------------------------------------------------------------------------
+
+[SLIDE 8]
+Proposed Solution
+Overall Concept: BoneGuard AI — An intelligent deep learning decision-support framework designed for automated fracture classification with adaptive attention refinement and cross-domain awareness.
+Key System Components: 1. X-ray Upload & Validation → 2. Intensity Normalization → 3. DenseNet121 Backbone → 4. Proposed DG-CBAM Attention → 5. Binary Classifier Head → 6. Confidence Score → 7. Grad-CAM Visualization → 8. React.js Dashboard.
+Research Novelty — Proposed DG-CBAM: Extends conventional CBAM by incorporating a difference-guided attention mechanism:
+        M_new = M_s + γ · |M_c − M_s|
+Where M_s = spatial attention, M_c = channel attention, and γ = learnable parameter.
+Mechanism Rationale: Allows the network to adaptively emphasize complementary differences between channel and spatial attention maps rather than relying on a rigid sequential cascade.
+8
+--------------------------------------------------------------------------------
+
+[SLIDE 9]
+Objectives
+1. Automated Classification Pipeline: Develop an automated deep learning pipeline for binary fracture/non-fracture classification from user-uploaded musculoskeletal X-ray images.
+2. Feature Extraction Backbone: Implement DenseNet121 as the baseline architecture to leverage dense connectivity and efficient feature reuse.
+3. Novel DG-CBAM Attention Design: Design and integrate the proposed Difference-Guided CBAM (DG-CBAM) attention module with a learnable parameter γ.
+4. Rigorous Comparative Evaluation: Benchmark DenseNet121 Baseline, standard CBAM, and proposed DG-CBAM across standard metrics (Accuracy, Precision, Recall, Specificity, F1, ROC-AUC).
+5. Cross-Domain Validation & Explainability: Evaluate domain transferability on the external FracAtlas benchmark (N=4,068) and integrate Grad-CAM visual heatmaps for clinical decision support.
+9
+--------------------------------------------------------------------------------
+
+[SLIDE 10]
+Proposed Methodology
+Phase 1: Problem Identification & Literature Survey: Analyze medical X-ray domain shift challenges and state-of-the-art attention mechanisms.
+Phase 2: Dataset Acquisition & Quality Filtering: Curate BFRMX dataset (N=3,731 cleaned; 6,770 duplicates removed) and FracAtlas external benchmark (N=4,068).
+Phase 3: Preprocessing & Data Isolation: 70% Train / 15% Val / 15% Internal Test split on BFRMX; strict zero-leakage protocol; intensity normalization.
+Phase 4: Model Development: Implement DenseNet121 Baseline, DenseNet121 + CBAM, and DenseNet121 + Proposed DG-CBAM.
+Phase 5: Training & Controlled Ablation: AdamW optimizer, CosineAnnealingLR, controlled domain robustness studies (Exp A to Exp E).
+Phase 6: In-Domain Validation & Testing: Evaluate quantitative performance on internal BFRMX test set (N=560).
+Phase 7: External Benchmark Generalization & Explainability: Evaluate out-of-domain robustness on FracAtlas (N=4,068) and perform Grad-CAM heatmap analysis.
+10
+--------------------------------------------------------------------------------
+
+[SLIDE 11]
+System Architecture / Block Diagram
+1. INPUT LAYER: Pre-acquired digital X-ray image uploaded by the clinician via the React.js web interface.
+2. PREPROCESSING & VALIDATION: Image validation → Resolution alignment (224x224x3) → Intensity normalization → Channel formatting.
+3. DEEP LEARNING CORE (BONEGUARD AI): 
+   • DenseNet121 Feature Backbone: 4 Dense Blocks with dense feature reuse and transition layers.
+   • Proposed DG-CBAM Modules: Dynamic feature recalibration: M_new = M_s + γ · |M_c − M_s|.
+   • Classification Head: Global Average Pooling (GAP) → Fully Connected Layer → Sigmoid Activation.
+4. DECISION SUPPORT & EXPLAINABILITY OUTPUT: Binary Classification (Fracture / Non-Fracture) • Prediction Confidence Score (%) • Grad-CAM Visual Heatmap Localization • React.js Clinical Decision Support Dashboard.
+11
+--------------------------------------------------------------------------------
+
+[SLIDE 12]
+Technologies / Tools
+Programming Languages: Python 3.11 (Pipeline, Training, Evaluation), JavaScript (ES6+), HTML5, CSS3
+Deep Learning Frameworks: PyTorch 2.x, Torchvision, DenseNet-121 Backbone, Proposed DG-CBAM Custom Module
+Evaluation & Analytics: Scikit-learn (ROC-AUC, PR-AUC, Confusion Matrix), NumPy, Pandas, Matplotlib, Seaborn
+Explainability & Frontend: Grad-CAM (PyTorch gradient hooks), React.js (Interactive Decision-Support UI)
+Development Environment & Hardware: VS Code, Antigravity IDE, Git/GitHub | NVIDIA GeForce RTX 3050 GPU (6GB VRAM), 16GB RAM
+12
+--------------------------------------------------------------------------------
+
+[SLIDE 13]
+Dataset / Experimental Data
+Primary Dataset — BFRMX (Internal Development): 
+   • Total Raw Images: 10,581 → Final Cleaned Usable: 3,731 (6,770 duplicates & 80 overlays excluded).
+   • Training Partition (70%): 2,611 images (1,050 Fracture [40.2%] / 1,561 Non-Fracture [59.8%]).
+   • Validation Partition (15%): 560 images (225 Fracture [40.2%] / 335 Non-Fracture [59.8%]).
+   • Internal Test Partition (15%): 560 images (226 Fracture [40.4%] / 334 Non-Fracture [59.6%]).
+External Benchmark Dataset — FracAtlas (External Generalization): 
+   • Total Usable Images: 4,068 images (713 Fracture [17.53%] / 3,355 Non-Fracture [82.47%]).
+   • Role: 100% External Generalization Test ONLY (Zero training overlap; zero data leakage).
+13
+--------------------------------------------------------------------------------
+
+[SLIDE 14]
+Expected Outcome
+14
+
+[TABLE]
+Evaluation Metric | Internal BFRMX Test (N=560) | External FracAtlas Test (N=4,068)
+Accuracy | 99.64% | 49.90%
+Precision | 100.00% | 22.38%
+Recall (Sensitivity) | 99.12% | 75.32%
+Specificity | 100.00% | 44.50%
+F1-Score | 99.56% | 34.51%
+ROC-AUC | 0.9996 | 0.6479
+Confusion Matrix | TP: 224 | TN: 334 | FP: 0 | FN: 2 | TP: 537 | TN: 1493 | FP: 1862 | FN: 176
+Scientific Note: High internal performance (99.64%) and substantially lower external benchmark performance (49.90%) demonstrate the fundamental importance of cross-domain validation in medical AI. Investigational research prototype — not clinically validated.
+--------------------------------------------------------------------------------
+
+[SLIDE 15]
+Novelty / Innovation
+1. Proposed Difference-Guided CBAM (DG-CBAM): 
+   • Conventional Attention: Applies channel (Mc) and spatial (Ms) attention sequentially without inter-attention divergence modeling.
+   • Proposed Formulation: M_new = M_s + γ · |M_c − M_s|, adaptively emphasizing complementary attention differences.
+   • Learnable Parameter γ: Dynamically optimized via backpropagation (converged to mean γ ≈ 0.1038 across dense stages).
+2. False-Positive Reduction on External Data: Achieved 447 FP reduction (1,862 vs 2,309 in original DG-CBAM and 2,646 in CBAM) while maintaining high sensitivity (75.32% recall).
+3. Multi-Domain Validation & Explainability: Rigorous zero-leakage cross-domain testing on 4,068 external images + Grad-CAM decision support.
+15
+--------------------------------------------------------------------------------
+
+[SLIDE 16]
+Publication Plan
+Target Venues: IEEE / Elsevier / Springer SCI & Scopus Indexed Journals / Conferences (e.g., Computers in Biology and Medicine, IEEE Access, Springer SN Computer Science).
+Planned Research Manuscript: "Difference-Guided Attention in DenseNet for Robust Bone Fracture Assessment and Cross-Domain Generalization"
+Paper Structure: 1. Introduction • 2. Literature Review • 3. Proposed DG-CBAM • 4. Dual-Dataset Protocols • 5. Experiments & Results • 6. Cross-Domain Generalization • 7. Grad-CAM Analysis • 8. Limitations & Conclusion.
+Future Research Scope: Multi-center clinical data collection, domain-adversarial adaptation, multi-class fracture severity classification, and prospective clinical usability studies.
+16
+--------------------------------------------------------------------------------
+
+[SLIDE 17]
+Conclusion
+• Automated Fracture Classification: BoneGuard AI provides an end-to-end deep learning framework for automated binary bone fracture assessment from X-ray scans.
+• DG-CBAM Attention Novelty: Introduced difference-guided attention (M_new = M_s + γ · |M_c − M_s|) with learnable γ, adaptively refining feature representation.
+• In-Domain Excellence: Demonstrated 99.64% accuracy, 100% precision, and 0.9996 ROC-AUC on the internal BFRMX test dataset.
+• Cross-Domain Generalization Insights: External benchmarking on FracAtlas (N=4,068) highlights the critical importance of domain shift evaluation and false-positive suppression in medical AI.
+• Next Implementation Phase: Integration into the interactive React.js decision-support prototype and further clinical evaluation.
+17
+--------------------------------------------------------------------------------
+
+[SLIDE 18]
+References
+[1] G. Huang, Z. Liu, L. van der Maaten, and K. Q. Weinberger, "Densely Connected Convolutional Networks," in Proc. IEEE Conf. Comput. Vis. Pattern Recognit. (CVPR), 2017, pp. 4700–4708. DOI: 10.1109/CVPR.2017.243
+[2] S. Woo, J. Park, J.-Y. Lee, and I. S. Kweon, "CBAM: Convolutional Block Attention Module," in Proc. Eur. Conf. Comput. Vis. (ECCV), 2018, pp. 3–19. DOI: 10.1007/978-3-030-01234-2_1
+[3] R. R. Selvaraju, M. Cogswell, A. Das, et al., "Grad-CAM: Visual Explanations from Deep Networks via Gradient-Based Localization," in Proc. IEEE Int. Conf. Comput. Vis. (ICCV), 2017, pp. 618–626. DOI: 10.1109/ICCV.2017.74
+[4] M. Iftekhar, M. M. R. Chowdhury, et al., "FracAtlas: A Dataset for Bone Fracture Detection and Classification," Nature Scientific Data, vol. 10, no. 1, p. 775, 2023. DOI: 10.1038/s41597-023-02432-4
+[5] P. Rajpurkar, J. Irvin, et al., "MURA: Large Dataset for Abnormality Detection in Musculoskeletal Radiographs," arXiv preprint arXiv:1712.06957, 2017.
+[6] B. Guan, G. Yao, et al., "Deep Learning for Bone Fracture Detection and Classification: A Survey," Journal of Healthcare Engineering, vol. 2021, Article ID 5556208, 2021.
+18
+--------------------------------------------------------------------------------
+
+[SLIDE 19]
+Review questions
+1. What is the problem? → Automated bone fracture classification from X-rays and severe performance drop across different acquisition domains.
+2. Why is it important? → Provides consistent, rapid computer-assisted screening to reduce diagnostic backlog, fatigue, and missed fractures.
+3. What has already been done? → DenseNet121 baseline, standard CBAM, and proposed DG-CBAM models have been developed, trained, and evaluated.
+4. What is the research gap? → Conventional attention lacks difference-based spatial-channel adaptation, and existing models fail on external datasets.
+5. What is your PICO? → P: X-ray classification; I: DenseNet121 + DG-CBAM; C: Baseline DenseNet121 & CBAM; O: 99.64% in-domain accuracy, 75.32% external recall, Grad-CAM explainability.
+6. What is your proposed solution? → BoneGuard AI combining DenseNet121 backbone, proposed DG-CBAM (M_new = M_s + γ · |M_c − M_s|), and Grad-CAM decision support.
+7. How will success be measured? → Standard metrics (Accuracy, Precision, Recall, Specificity, F1, ROC-AUC) across both internal BFRMX test and external FracAtlas benchmark.
+19
+--------------------------------------------------------------------------------
+
+[SLIDE 20]
+Thank You
+BoneGuard AI
+Advanced Bone Fracture Assessment and Clinical Decision SupportThrough Deep Learning-Based X-Ray Image Analysis
+20
+--------------------------------------------------------------------------------

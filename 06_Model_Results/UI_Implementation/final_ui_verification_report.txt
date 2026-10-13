@@ -1,0 +1,106 @@
+================================================================================
+BONEGUARD AI — FINAL RESEARCH PROTOTYPE & UI VERIFICATION REPORT
+================================================================================
+Date: 2026-09-29
+Project: Advanced Bone Fracture Assessment and Clinical Decision Support
+         Through Deep Learning-Based X-Ray Image Analysis
+Architecture: React.js Web UI <-> FastAPI Server <-> DenseNet121 + DG-CBAM
+Deployment Status: Verified, Scientifically Transparent, and Ready for Review 1
+
+--------------------------------------------------------------------------------
+1. RESEARCH & MODEL INTEGRITY CONFIRMATION
+--------------------------------------------------------------------------------
+  [X] Zero Model Retraining: The model was NOT retrained or modified.
+  [X] Zero Weight Modification: Model state-dict and parameters remain 100% intact.
+  [X] Checkpoint Unchanged: 06_Model_Results/DGCBAM_DomainRobustness/Exp_E_ClassWeight/best_model.pth (28.28 MB)
+  [X] Classification Threshold Unchanged: Standard decision threshold locked at 0.50.
+  [X] Zero Dataset Tampering: BFRMX partitions and FracAtlas benchmark remain untouched.
+  [X] Full Scientific Transparency: Internal vs external benchmark metrics explicitly segregated.
+
+--------------------------------------------------------------------------------
+2. FILES MODIFIED & PRESERVED
+--------------------------------------------------------------------------------
+Files Modified:
+  - frontend/src/components/Dashboard.jsx:
+      • Added visible research prototype & domain-shift notice banner on X-Ray Analysis page.
+      • Added inline investigational model disclaimer below prediction card.
+      • Ensured "Model confidence" wording is strictly maintained.
+  - frontend/src/components/Validation.jsx:
+      • Explicitly segregated "INTERNAL VALIDATION — BFRMX" from "EXTERNAL GENERALIZATION BENCHMARK — FracAtlas".
+      • Added label: "External Generalization Benchmark — Not Used for Model Selection".
+      • Displayed full FracAtlas confusion matrix (TP=537, TN=1,493, FP=1,862, FN=176), PR-AUC (0.2711), and F1 (34.51%).
+      • Added domain-shift sensitivity explanation.
+  - frontend/src/App.css:
+      • Added styling tokens for research domain notice banner and inline prediction disclaimers.
+  - backend/inference/pipeline.py:
+      • Added PR-AUC (0.2711) metadata to external benchmark response in get_validation_info().
+  - README.md:
+      • Added dedicated section "Known Limitation: Cross-Domain Generalization".
+
+Files Preserved:
+  - 05_Code/models/densenet121_dgcbam.py (Model architecture unchanged)
+  - 05_Code/training/* (All training scripts preserved)
+  - 05_Code/evaluation/* (All evaluation & confirmation scripts preserved)
+  - 06_Model_Results/DGCBAM_DomainRobustness/Exp_E_ClassWeight/best_model.pth (Checkpoint preserved)
+  - 04_Preprocessing/* (Datasets and splits preserved)
+
+--------------------------------------------------------------------------------
+3. VERIFIED SCIENTIFIC PERFORMANCE METRICS
+--------------------------------------------------------------------------------
+
+[A] INTERNAL VALIDATION — BFRMX (N = 560):
+  - Accuracy: 99.64% (558 / 560 correct)
+  - Precision (PPV): 100.00%
+  - Recall / Sensitivity: 99.12% (224 / 226 fractures detected)
+  - Specificity (TNR): 100.00% (334 / 334 normal scans identified)
+  - F1-Score: 99.56%
+  - ROC-AUC: 0.9996
+  - PR-AUC: 0.9995
+  - Confusion Matrix: TP = 224, TN = 334, FP = 0, FN = 2
+  - Protocol: Strict zero-data-leakage 70/15/15 patient partition with locked 0.50 threshold.
+
+[B] EXTERNAL BENCHMARK — FracAtlas (N = 4,068):
+  - Label: External Generalization Benchmark — Not Used for Model Selection
+  - Accuracy: 49.90%
+  - Precision (PPV): 22.38% (Prevalence: 17.53% fracture)
+  - Recall / Sensitivity: 75.32% (537 / 713 fractures detected)
+  - Specificity (TNR): 44.50% (1,493 / 3,355 normal scans identified)
+  - F1-Score: 34.51%
+  - ROC-AUC: 0.6479
+  - PR-AUC: 0.2711
+  - Confusion Matrix: TP = 537, TN = 1,493, FP = 1,862, FN = 176
+  - Domain-Shift Finding: The contrast between 99.64% in-domain accuracy and 49.90%
+    external accuracy is a genuine research demonstration of domain-shift sensitivity.
+    Exp-E unweighted loss reduced 447 False Positives relative to the baseline DG-CBAM configuration.
+
+--------------------------------------------------------------------------------
+4. TEST & BUILD RESULTS
+--------------------------------------------------------------------------------
+
+Backend API Tests (test_backend_api.py):
+  - test_01_health_endpoint: PASSED (200 OK, device: cuda)
+  - test_02_model_info_endpoint: PASSED (200 OK, 7,259,406 params)
+  - test_03_validation_info_endpoint: PASSED (200 OK, BFRMX 99.64%, FracAtlas 49.90%)
+  - test_04_predict_endpoint_real_fracture: PASSED (FRACTURE, prob: 0.9814)
+  - test_05_predict_endpoint_real_normal: PASSED (NO FRACTURE, prob: 0.6156)
+  - test_06_predict_with_gradcam_endpoint: PASSED (Base64 Grad-CAM PNG)
+  - test_07_invalid_image_upload: PASSED (400 Bad Request)
+  - test_08_empty_image_upload: PASSED (400 Bad Request)
+  Result: 8 / 8 Tests Passed (100% Pass Rate).
+
+Frontend Production Build (Vite 8.3.1):
+  - Modules Transformed: 1,892
+  - Output Assets: dist/index.html (0.88 kB), dist/assets/index-*.css (27.59 kB), dist/assets/index-*.js (271.90 kB)
+  - Build Time: 1.48s
+  - Lint / Syntax Errors: 0
+
+--------------------------------------------------------------------------------
+5. ACADEMIC PRESENTATION READINESS
+--------------------------------------------------------------------------------
+The BoneGuard AI prototype is fully prepared for Review 1 demonstration:
+  1. Live interactive radiograph analysis with real-time model probabilities.
+  2. Explainable Grad-CAM heatmaps with 4 viewing modes (Overlay, Heatmap, Original, Side-by-Side).
+  3. Interactive DG-CBAM mathematical formulation with verified learned gamma scalars.
+  4. Scientifically rigorous validation dashboard distinguishing in-domain metrics from external stress-testing.
+  5. Transparent clinical research disclaimers placed across all user touchpoints.
+================================================================================

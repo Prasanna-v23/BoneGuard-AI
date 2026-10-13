@@ -1,0 +1,6 @@
+Model / Experiment,Description,BFRMX_Acc,BFRMX_F1,BFRMX_Recall,BFRMX_Spec,BFRMX_AUC,FracAtlas_Acc,FracAtlas_F1,FracAtlas_Recall,FracAtlas_Spec,FracAtlas_AUC,FracAtlas_TP,FracAtlas_TN,FracAtlas_FP,FracAtlas_FN
+DenseNet121 Baseline,Vanilla DenseNet-121 without attention,99.64,99.56,99.56,99.7,0.9999,41.3,31.46,76.86,33.74,0.6104,548,1132,2223,165
+DenseNet121 + Standard CBAM,Sequential Channel and Spatial Attention,99.82,99.78,99.56,100.0,0.9992,32.52,30.91,86.12,21.13,0.5861,614,709,2646,99
+DenseNet121 + DG-CBAM (Original),Proposed DG-CBAM with weighted loss,99.64,99.56,99.12,100.0,0.9999,40.09,32.44,82.05,31.18,0.6336,585,1046,2309,128
+Exp E — Unweighted DG-CBAM,DG-CBAM with unweighted CrossEntropyLoss,99.64,99.56,99.12,100.0,0.9996,49.9,34.51,75.32,44.5,0.6479,537,1493,1862,176
+Exp F — Domain-Robust Augmentation,DG-CBAM + realistic radiographic domain-variation augmentation,99.46428571428572,99.33774834437085,99.5575221238938,99.40119760479041,0.9997350431879604,36.94690265486726,33.18572544933576,89.34081346423562,25.812220566318928,0.6205663189269747,637,866,2489,76
